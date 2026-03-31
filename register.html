@@ -30,7 +30,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// get camp ID from URL
 const params = new URLSearchParams(window.location.search);
 const campId = params.get("id");
 
