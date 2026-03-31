@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bookings</title>
+</head>
+<body>
+
+<h2>All Bookings</h2>
+
+<div id="booking-list"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
+  authDomain: "hockey-camp-68285.firebaseapp.com",
+  projectId: "hockey-camp-68285",
+  storageBucket: "hockey-camp-68285.firebasestorage.app",
+  messagingSenderId: "311365605934",
+  appId: "1:311365605934:web:133aa5172e95908e541dbf",
+  measurementId: "G-77GDJX4N0P"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const bookingList = document.getElementById("booking-list");
+
+db.collection("bookings").onSnapshot(snapshot => {
+  bookingList.innerHTML = "";
+
+  snapshot.forEach(doc => {
+    const b = doc.data();
+
+    bookingList.innerHTML += `
+      <div style="border:1px solid black; padding:10px; margin:10px;">
+        <h3>${b.name}</h3>
+        <p>Age: ${b.age}</p>
+        <p>Email: ${b.email}</p>
+        <p>Camp ID: ${b.campId}</p>
+      </div>
+    `;
+  });
+});
+</script>
+
+</body>
+</html>
