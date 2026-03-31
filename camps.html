@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Camp Dates</title>
+  <title>Camps</title>
 
   <style>
     body {
@@ -32,17 +32,12 @@
     }
 
     button {
-      background: #007bff;
+      background: #e63946;
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 10px;
       border-radius: 8px;
-      cursor: pointer;
       width: 100%;
-    }
-
-    button:hover {
-      background: #0056b3;
     }
   </style>
 </head>
@@ -63,26 +58,10 @@ const firebaseConfig = {
   apiKey: "AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
   authDomain: "hockey-camp-68285.firebaseapp.com",
   projectId: "hockey-camp-68285",
-  storageBucket: "hockey-camp-68285.firebasestorage.app",
-  messagingSenderId: "311365605934",
-  appId: "1:311365605934:web:133aa5172e95908e541dbf"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-
-function formatDate(dateStr){
-  const date = new Date(dateStr);
-  return date.toLocaleDateString();
-}
-
-function formatTime(time){
-  const [h, m] = time.split(":");
-  let hour = parseInt(h);
-  const ampm = hour >= 12 ? "PM" : "AM";
-  hour = hour % 12 || 12;
-  return `${hour}:${m} ${ampm}`;
-}
 
 const campList = document.getElementById("camp-list");
 
@@ -95,10 +74,9 @@ db.collection("camps").onSnapshot(snapshot => {
     campList.innerHTML += `
       <div class="card">
         <h3>${camp.title}</h3>
-
-        <p><strong>Dates:</strong> ${formatDate(camp.startDate)} → ${formatDate(camp.endDate)}</p>
-        <p><strong>Time:</strong> ${formatTime(camp.startTime)} → ${formatTime(camp.endTime)}</p>
-        <p><strong>Price:</strong> £${camp.price}</p>
+        <p>${camp.startDate} → ${camp.endDate}</p>
+        <p>${camp.startTime} → ${camp.endTime}</p>
+        <p>£${camp.price}</p>
 
         <a href="register.html?id=${doc.id}">
           <button>Book Now</button>
