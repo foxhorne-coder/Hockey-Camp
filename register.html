@@ -11,15 +11,10 @@
       padding: 40px;
     }
 
-    h2 {
-      margin-bottom: 20px;
-    }
-
-    .form-box {
+    .box {
       background: white;
       padding: 30px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       display: inline-block;
     }
 
@@ -29,23 +24,15 @@
       width: 250px;
       border-radius: 8px;
       border: 1px solid #ccc;
-      font-size: 14px;
     }
 
     button {
-      padding: 12px 20px;
-      background: #007bff;
+      background: #e63946;
       color: white;
+      padding: 12px;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
       width: 260px;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background: #0056b3;
     }
   </style>
 </head>
@@ -54,14 +41,14 @@
 
 <h2>Book Your Camp Spot</h2>
 
-<div class="form-box">
+<div class="box">
   <input id="name" placeholder="Player Name"><br>
   <input id="age" placeholder="Age"><br>
   <input id="number" placeholder="Player Number"><br>
   <input id="team" placeholder="Current Team"><br>
   <input id="email" placeholder="Parent Email"><br>
 
-  <button onclick="book()">Confirm Booking & Pay</button>
+  <button onclick="book()">Confirm & Pay</button>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -72,16 +59,11 @@ const firebaseConfig = {
   apiKey: "AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
   authDomain: "hockey-camp-68285.firebaseapp.com",
   projectId: "hockey-camp-68285",
-  storageBucket: "hockey-camp-68285.firebasestorage.app",
-  messagingSenderId: "311365605934",
-  appId: "1:311365605934:web:133aa5172e95908e541dbf",
-  measurementId: "G-77GDJX4N0P"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// Get camp ID from URL
 const params = new URLSearchParams(window.location.search);
 const campId = params.get("id");
 
@@ -92,25 +74,16 @@ async function book(){
   const team = document.getElementById("team").value;
   const email = document.getElementById("email").value;
 
-  // Get camp info
   const campDoc = await db.collection("camps").doc(campId).get();
   const camp = campDoc.data();
 
-  // Save booking as pending
   const bookingRef = await db.collection("bookings").add({
-    name: name,
-    age: age,
-    playerNumber: number,
-    team: team,
-    email: email,
-    campId: campId,
+    name, age, playerNumber: number, team, email,
+    campId,
     campName: camp.title,
     status: "pending"
   });
 
-  alert("Redirecting to secure payment...");
-
-  // 🔥 YOUR STRIPE PAYMENT LINK
   window.location = "https://buy.stripe.com/eVq8wQe7g84MdSW6288N200?bookingId=" + bookingRef.id;
 }
 </script>
