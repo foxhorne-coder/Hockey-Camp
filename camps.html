@@ -9,9 +9,7 @@
 
 <div id="camp-list"></div>
 
-<a href="index.html">
-  <button>Back Home</button>
-</a>
+<a href="index.html"><button>Back Home</button></a>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
@@ -28,12 +26,40 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const db = firebase.firestore();
 
 const campList = document.getElementById("camp-list");
 
-// 🔥 THIS LISTENS LIVE
+// FORMAT DATE
+function formatDate(dateStr){
+  const date = new Date(dateStr);
+  const day = date.getDate();
+  const month = date.toLocaleString('default', { month: 'long' });
+  const year = date.getFullYear().toString().slice(-2);
+
+  function getSuffix(d){
+    if (d > 3 && d < 21) return "th";
+    switch (d % 10){
+      case 1: return "st";
+      case 2: return "nd";
+      case 3: return "rd";
+      default: return "th";
+    }
+  }
+
+  return `${day}${getSuffix(day)} of ${month} ${year}`;
+}
+
+// FORMAT TIME
+function formatTime(time){
+  const [hour, minute] = time.split(":");
+  let h = parseInt(hour);
+  const ampm = h >= 12 ? "PM" : "AM";
+  h = h % 12 || 12;
+  return `${h}:${minute} ${ampm}`;
+}
+
+// LOAD CAMPS
 db.collection("camps").onSnapshot(snapshot => {
   campList.innerHTML = "";
 
@@ -43,8 +69,20 @@ db.collection("camps").onSnapshot(snapshot => {
     campList.innerHTML += `
       <div style="border:1px solid black; padding:10px; margin:10px;">
         <h3>${camp.title}</h3>
-        <p>Date: ${camp.date}</p>
+
+        <p>
+          Dates: ${formatDate(camp.startDate)} → ${formatDate(camp.endDate)}
+        </p>
+
+        <p>
+          Time: ${formatTime(camp.startTime)} → ${formatTime(camp.endTime)}
+        </p>
+
         <p>Price: £${camp.price}</p>
+
+        <a href="register.html?id=${doc.id}">
+          <button>Book Now</button>
+        </a>
       </div>
     `;
   });
