@@ -28,6 +28,7 @@ const db = firebase.firestore();
 
 const bookingList = document.getElementById("booking-list");
 
+// LOAD BOOKINGS
 db.collection("bookings").onSnapshot(snapshot => {
   bookingList.innerHTML = "";
 
@@ -37,10 +38,13 @@ db.collection("bookings").onSnapshot(snapshot => {
     bookingList.innerHTML += `
       <div style="border:1px solid black; padding:10px; margin:10px;">
         <h3>${b.name}</h3>
-        <p>Camp: ${b.campName}</p>
-        <p>Age: ${b.age}</p>
-        <p>Email: ${b.email}</p>
-        <p>Status: ${b.status}</p>
+
+        <p><strong>Camp:</strong> ${b.campName}</p>
+        <p><strong>Age:</strong> ${b.age}</p>
+        <p><strong>Number:</strong> ${b.playerNumber}</p>
+        <p><strong>Team:</strong> ${b.team}</p>
+        <p><strong>Email:</strong> ${b.email}</p>
+        <p><strong>Status:</strong> ${b.status}</p>
 
         <button onclick="markPaid('${doc.id}')">Mark Paid</button>
         <button onclick="deleteBooking('${doc.id}')">Delete</button>
@@ -49,14 +53,14 @@ db.collection("bookings").onSnapshot(snapshot => {
   });
 });
 
-// ✅ mark as paid
+// MARK AS PAID
 function markPaid(id){
   db.collection("bookings").doc(id).update({
     status: "paid"
   });
 }
 
-// ❌ delete booking
+// DELETE
 function deleteBooking(id){
   if(confirm("Delete this booking?")){
     db.collection("bookings").doc(id).delete();
