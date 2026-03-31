@@ -37,13 +37,31 @@ db.collection("bookings").onSnapshot(snapshot => {
     bookingList.innerHTML += `
       <div style="border:1px solid black; padding:10px; margin:10px;">
         <h3>${b.name}</h3>
+        <p>Camp: ${b.campName}</p>
         <p>Age: ${b.age}</p>
         <p>Email: ${b.email}</p>
-        <p>Camp ID: ${b.campId}</p>
+        <p>Status: ${b.status}</p>
+
+        <button onclick="markPaid('${doc.id}')">Mark Paid</button>
+        <button onclick="deleteBooking('${doc.id}')">Delete</button>
       </div>
     `;
   });
 });
+
+// ✅ mark as paid
+function markPaid(id){
+  db.collection("bookings").doc(id).update({
+    status: "paid"
+  });
+}
+
+// ❌ delete booking
+function deleteBooking(id){
+  if(confirm("Delete this booking?")){
+    db.collection("bookings").doc(id).delete();
+  }
+}
 </script>
 
 </body>
