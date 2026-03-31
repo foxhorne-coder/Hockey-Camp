@@ -1,0 +1,25 @@
+<h2>Admin Dashboard - Add Camp Date</h2>
+
+<input id="title" placeholder="Camp Name">
+<input id="date" type="date">
+<input id="price" placeholder="Price">
+
+<button onclick="addCamp()">Add Camp</button>
+
+<script>
+  // Firebase already initialized in admin.html
+
+  function addCamp(){
+    const title = document.getElementById("title").value;
+    const date = document.getElementById("date").value;
+    const price = document.getElementById("price").value;
+
+    db.collection("camps").add({
+      title: title,
+      date: date,
+      price: price
+    })
+    .then(()=> alert("Camp added!"))
+    .catch(err => alert(err));
+  }
+</script>
