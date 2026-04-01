@@ -8,12 +8,23 @@
       font-family: Arial;
       margin: 0;
       background: #f5f7fa;
-      animation: fadeIn 0.6s ease-in;
     }
 
-    @keyframes fadeIn {
-      from {opacity:0;}
-      to {opacity:1;}
+    #loader {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: #0a2540;
+      color: white;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      z-index:9999;
+      animation: fadeOut 1s ease 1.5s forwards;
+    }
+
+    @keyframes fadeOut {
+      to {opacity:0; visibility:hidden;}
     }
 
     nav {
@@ -27,11 +38,6 @@
       color:white;
       margin:10px;
       text-decoration:none;
-      transition:0.3s;
-    }
-
-    nav a:hover {
-      color:#e63946;
     }
 
     header {
@@ -53,11 +59,11 @@
       padding:20px;
       border-radius:12px;
       box-shadow:0 4px 10px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
+      transition:0.3s;
     }
 
     .card:hover {
-      transform: translateY(-8px) scale(1.02);
+      transform:translateY(-8px);
     }
 
     button {
@@ -67,16 +73,13 @@
       border:none;
       border-radius:8px;
       width:100%;
-      transition:0.3s;
-    }
-
-    button:hover {
-      transform: scale(1.05);
     }
   </style>
 </head>
 
 <body>
+
+<div id="loader">Loading...</div>
 
 <nav>
   <img src="logo.png" style="height:40px;">
@@ -104,11 +107,26 @@ const firebaseConfig = {
   projectId: "hockey-camp-68285"
 };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
+const db = firebase.firestore();
 const campList = document.getElementById("camp-list");
 
+// COUNTDOWN FUNCTION
+function getCountdown(dateStr){
+  const now = new Date();
+  const target = new Date(dateStr);
+  const diff = target - now;
+
+  if(diff <= 0) return "Started";
+
+  const days = Math.floor(diff / (1000*60*60*24));
+  return days + " days to go";
+}
+
+// LOAD CAMPS
 db.collection("camps").onSnapshot(async snapshot => {
   campList.innerHTML = "";
 
@@ -125,7 +143,9 @@ db.collection("camps").onSnapshot(async snapshot => {
       <div class="card">
         <h3>${camp.title}</h3>
 
-        <p>${camp.description || "Elite training sessions and match play."}</p>
+        <p>${camp.description || ""}</p>
+
+        <p><strong>${getCountdown(camp.startDate)}</strong></p>
 
         <p>${camp.startDate} → ${camp.endDate}</p>
         <p>${camp.startTime} → ${camp.endTime}</p>
