@@ -6,22 +6,35 @@
   <style>
     body {
       font-family: Arial;
-      margin: 0;
-      background: #f5f7fa;
-      animation: fadeIn 0.8s ease-in;
+      margin:0;
+      background:#f5f7fa;
     }
 
-    @keyframes fadeIn {
-      from {opacity:0;}
-      to {opacity:1;}
+    /* LOADER */
+    #loader {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: #0a2540;
+      color: white;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-size:24px;
+      z-index:9999;
+      animation: fadeOut 1s ease 1.5s forwards;
     }
 
+    @keyframes fadeOut {
+      to {opacity:0; visibility:hidden;}
+    }
+
+    /* NAV */
     nav {
       background:#0a2540;
       padding:15px;
       display:flex;
       justify-content:space-between;
-      align-items:center;
     }
 
     nav a {
@@ -35,6 +48,7 @@
       color:#e63946;
     }
 
+    /* HERO */
     .hero {
       background:url('photo1.jpg') center/cover;
       padding:120px 20px;
@@ -60,38 +74,45 @@
     button {
       background:#e63946;
       color:white;
-      padding:15px 25px;
+      padding:15px;
       border:none;
       border-radius:8px;
-      cursor:pointer;
-      transition: all 0.3s ease;
+      transition:0.3s;
     }
 
     button:hover {
-      transform: scale(1.08);
-      background:#c92d3a;
+      transform:scale(1.1);
     }
 
-    .grid {
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap:15px;
-      padding:40px;
+    /* SCROLL ANIMATION */
+    .fade-in {
+      opacity:0;
+      transform:translateY(30px);
+      transition:0.6s;
     }
 
-    .grid img {
-      width:100%;
-      border-radius:10px;
-      transition: transform 0.4s ease;
+    .fade-in.show {
+      opacity:1;
+      transform:translateY(0);
     }
 
-    .grid img:hover {
-      transform: scale(1.1);
+    /* PAGE SLIDE */
+    .page {
+      animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+      from {transform:translateX(50px); opacity:0;}
+      to {transform:translateX(0); opacity:1;}
     }
   </style>
 </head>
 
 <body>
+
+<div id="loader">Hockey Project UK</div>
+
+<div class="page">
 
 <nav>
   <img src="logo.png" style="height:40px;">
@@ -103,20 +124,30 @@
   </div>
 </nav>
 
-<div class="hero">
+<div class="hero fade-in">
   <h1>Hockey Project UK</h1>
   <p>Elite Training Camps</p>
-
-  <a href="camps.html">
-    <button>View Camps</button>
-  </a>
 </div>
 
-<div class="grid">
-  <img src="photo1.jpg">
-  <img src="photo2.jpg">
-  <img src="photo3.jpg">
+<div class="fade-in" style="padding:40px; text-align:center;">
+  <h2>Train Like a Pro</h2>
 </div>
+
+</div>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add("show");
+    }
+  });
+});
+
+document.querySelectorAll(".fade-in").forEach(el => {
+  observer.observe(el);
+});
+</script>
 
 </body>
 </html>
