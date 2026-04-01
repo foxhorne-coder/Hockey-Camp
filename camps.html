@@ -8,16 +8,19 @@
       font-family: Arial;
       margin: 0;
       background: #f5f7fa;
+      animation: fadeIn 0.6s ease-in;
     }
 
-    /* NAVBAR */
+    @keyframes fadeIn {
+      from {opacity:0;}
+      to {opacity:1;}
+    }
+
     nav {
       background:#0a2540;
-      color:white;
       padding:15px;
       display:flex;
       justify-content:space-between;
-      align-items:center;
     }
 
     nav a {
@@ -38,7 +41,6 @@
       text-align:center;
     }
 
-    /* GRID */
     .container {
       padding:20px;
       display:grid;
@@ -46,26 +48,16 @@
       gap:20px;
     }
 
-    /* CAMP CARD */
     .card {
       background:white;
       padding:20px;
       border-radius:12px;
       box-shadow:0 4px 10px rgba(0,0,0,0.1);
-      transition:0.3s;
+      transition: all 0.3s ease;
     }
 
     .card:hover {
-      transform: translateY(-6px);
-    }
-
-    h3 {
-      margin-top:0;
-    }
-
-    .desc {
-      color:#555;
-      margin:10px 0;
+      transform: translateY(-8px) scale(1.02);
     }
 
     button {
@@ -75,24 +67,17 @@
       border:none;
       border-radius:8px;
       width:100%;
-      cursor:pointer;
       transition:0.3s;
     }
 
     button:hover {
-      background:#c92d3a;
-    }
-
-    button:disabled {
-      background:gray;
-      cursor:not-allowed;
+      transform: scale(1.05);
     }
   </style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
 <nav>
   <img src="logo.png" style="height:40px;">
   <div>
@@ -109,7 +94,6 @@
 
 <div class="container" id="camp-list"></div>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
@@ -131,24 +115,20 @@ db.collection("camps").onSnapshot(async snapshot => {
   for (const doc of snapshot.docs) {
     const camp = doc.data();
 
-    // Get number of bookings
     const bookingsSnap = await db.collection("bookings")
       .where("campId", "==", doc.id)
       .get();
 
-    const maxPlayers = parseInt(camp.maxPlayers) || 20;
-    const spotsLeft = maxPlayers - bookingsSnap.size;
+    const spotsLeft = (camp.maxPlayers || 20) - bookingsSnap.size;
 
     campList.innerHTML += `
       <div class="card">
         <h3>${camp.title}</h3>
 
-        <p class="desc">
-          ${camp.description || "High intensity training, skills development and match situations."}
-        </p>
+        <p>${camp.description || "Elite training sessions and match play."}</p>
 
-        <p><strong>Dates:</strong> ${camp.startDate} → ${camp.endDate}</p>
-        <p><strong>Time:</strong> ${camp.startTime} → ${camp.endTime}</p>
+        <p>${camp.startDate} → ${camp.endDate}</p>
+        <p>${camp.startTime} → ${camp.endTime}</p>
 
         <p><strong>Spots left:</strong> ${spotsLeft}</p>
 
