@@ -8,61 +8,94 @@
       font-family: Arial;
       margin: 0;
       background: #f5f7fa;
-      text-align: center;
     }
 
-    header {
-      background: #0a2540;
-      color: white;
-      padding: 20px;
+    nav {
+      background:#0a2540;
+      color:white;
+      padding:15px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
     }
 
-    img {
-      height: 60px;
+    nav a {
+      color:white;
+      margin:10px;
+      text-decoration:none;
     }
 
-    .container {
-      padding: 40px;
+    .hero {
+      background:url('photo1.jpg') center/cover;
+      color:white;
+      padding:100px 20px;
+      text-align:center;
+    }
+
+    .hero h1 {
+      font-size:40px;
     }
 
     button {
-      background: #e63946;
-      color: white;
-      border: none;
-      padding: 15px 25px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
+      background:#e63946;
+      color:white;
+      padding:15px 25px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
     }
 
-    button:hover {
-      background: #c92d3a;
+    .gallery {
+      padding:40px;
+      text-align:center;
+    }
+
+    .grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap:15px;
+    }
+
+    .grid img {
+      width:100%;
+      border-radius:10px;
     }
 
     .contact {
-      margin-top: 40px;
-      padding: 20px;
-      background: white;
+      padding:30px;
+      background:white;
+      text-align:center;
     }
   </style>
 </head>
 
 <body>
 
-<header>
-  <!-- Add your logo file called logo.png -->
-  <img src="logo.png"><br>
-  <h1>Hockey Project UK</h1>
-  <p>Develop Skills. Play Faster.</p>
-</header>
+<nav>
+  <img src="logo.png" style="height:40px;">
+  <div>
+    <a href="index.html">Home</a>
+    <a href="camps.html">Camps</a>
+  </div>
+</nav>
 
-<div class="container">
-  <h2>Train Like a Pro</h2>
-  <p>Join our elite hockey camps and take your game to the next level.</p>
+<div class="hero">
+  <h1>Hockey Project UK</h1>
+  <p>Elite Training Camps</p>
 
   <a href="camps.html">
     <button>View Camps</button>
   </a>
+</div>
+
+<div class="gallery">
+  <h2>Camp Action</h2>
+
+  <div class="grid">
+    <img src="photo1.jpg">
+    <img src="photo2.jpg">
+    <img src="photo3.jpg">
+  </div>
 </div>
 
 <div class="contact">
