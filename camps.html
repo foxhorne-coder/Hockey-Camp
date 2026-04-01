@@ -11,33 +11,33 @@
     }
 
     header {
-      background: #0a2540;
-      color: white;
-      padding: 20px;
-      text-align: center;
+      background:#0a2540;
+      color:white;
+      padding:20px;
+      text-align:center;
     }
 
     .container {
-      padding: 20px;
-      display: grid;
+      padding:20px;
+      display:grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
+      gap:20px;
     }
 
     .card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      background:white;
+      padding:20px;
+      border-radius:12px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
     }
 
     button {
-      background: #e63946;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      width: 100%;
+      background:#e63946;
+      color:white;
+      padding:10px;
+      border:none;
+      border-radius:8px;
+      width:100%;
     }
   </style>
 </head>
@@ -57,7 +57,7 @@
 const firebaseConfig = {
   apiKey: "AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
   authDomain: "hockey-camp-68285.firebaseapp.com",
-  projectId: "hockey-camp-68285",
+  projectId: "hockey-camp-68285"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -65,25 +65,35 @@ const db = firebase.firestore();
 
 const campList = document.getElementById("camp-list");
 
-db.collection("camps").onSnapshot(snapshot => {
+db.collection("camps").onSnapshot(async snapshot => {
   campList.innerHTML = "";
 
-  snapshot.forEach(doc => {
+  for (const doc of snapshot.docs) {
     const camp = doc.data();
+
+    const bookingsSnap = await db.collection("bookings")
+      .where("campId", "==", doc.id)
+      .get();
+
+    const spotsLeft = (camp.maxPlayers || 20) - bookingsSnap.size;
 
     campList.innerHTML += `
       <div class="card">
         <h3>${camp.title}</h3>
+
         <p>${camp.startDate} → ${camp.endDate}</p>
         <p>${camp.startTime} → ${camp.endTime}</p>
-        <p>£${camp.price}</p>
+
+        <p><strong>Spots left:</strong> ${spotsLeft}</p>
 
         <a href="register.html?id=${doc.id}">
-          <button>Book Now</button>
+          <button ${spotsLeft <= 0 ? "disabled" : ""}>
+            ${spotsLeft <= 0 ? "FULL" : "Book Now"}
+          </button>
         </a>
       </div>
     `;
-  });
+  }
 });
 </script>
 
