@@ -2,54 +2,21 @@
 <html>
 <head>
   <title>Book Camp</title>
-
-  <style>
-    body {
-      font-family: Arial;
-      background: #f5f7fa;
-      text-align: center;
-      padding: 40px;
-    }
-
-    .box {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      display: inline-block;
-    }
-
-    input {
-      padding: 12px;
-      margin: 10px;
-      width: 250px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      background: #e63946;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      width: 260px;
-    }
-  </style>
 </head>
 
-<body>
+<body style="font-family:Arial; text-align:center; padding:40px;">
 
-<h2>Book Your Camp Spot</h2>
+<h2>Book Camp</h2>
 
-<div class="box">
-  <input id="name" placeholder="Player Name"><br>
-  <input id="age" placeholder="Age"><br>
-  <input id="number" placeholder="Player Number"><br>
-  <input id="team" placeholder="Current Team"><br>
-  <input id="email" placeholder="Parent Email"><br>
+<input id="name" placeholder="Name"><br><br>
+<input id="age" placeholder="Age"><br><br>
+<input id="number" placeholder="Player Number"><br><br>
+<input id="team" placeholder="Team"><br><br>
+<input id="email" placeholder="Email"><br><br>
 
-  <button onclick="book()">Confirm & Pay</button>
-</div>
+<button onclick="book()">Book & Pay</button>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
@@ -58,10 +25,13 @@
 const firebaseConfig = {
   apiKey: "AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
   authDomain: "hockey-camp-68285.firebaseapp.com",
-  projectId: "hockey-camp-68285",
+  projectId: "hockey-camp-68285"
 };
 
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
 const db = firebase.firestore();
 
 const params = new URLSearchParams(window.location.search);
@@ -84,7 +54,16 @@ async function book(){
     status: "pending"
   });
 
-  window.location = "https://buy.stripe.com/eVq8wQe7g84MdSW6288N200?bookingId=" + bookingRef.id;
+  // 🎉 CONFETTI
+  confetti({
+    particleCount:150,
+    spread:70,
+    origin:{y:0.6}
+  });
+
+  setTimeout(()=>{
+    window.location = "https://buy.stripe.com/eVq8wQe7g84MdSW6288N200?bookingId=" + bookingRef.id;
+  },1500);
 }
 </script>
 
