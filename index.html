@@ -23,17 +23,38 @@
       color:white;
       margin:10px;
       text-decoration:none;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color:#e63946;
     }
 
     .hero {
       background:url('photo1.jpg') center/cover;
-      color:white;
-      padding:100px 20px;
+      padding:120px 20px;
       text-align:center;
+      color:white;
+      position:relative;
+    }
+
+    /* DARK OVERLAY (fixes white text issue) */
+    .hero::before {
+      content:"";
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      background:rgba(0,0,0,0.5);
+    }
+
+    .hero * {
+      position:relative;
     }
 
     .hero h1 {
-      font-size:40px;
+      font-size:42px;
     }
 
     button {
@@ -43,9 +64,15 @@
       border:none;
       border-radius:8px;
       cursor:pointer;
+      transition:0.3s;
     }
 
-    .gallery {
+    button:hover {
+      transform: scale(1.05);
+      background:#c92d3a;
+    }
+
+    .section {
       padding:40px;
       text-align:center;
     }
@@ -59,12 +86,16 @@
     .grid img {
       width:100%;
       border-radius:10px;
+      transition:0.3s;
+    }
+
+    .grid img:hover {
+      transform: scale(1.05);
     }
 
     .contact {
       padding:30px;
       background:white;
-      text-align:center;
     }
   </style>
 </head>
@@ -74,9 +105,9 @@
 <nav>
   <img src="logo.png" style="height:40px;">
   <div>
-		<a href="index.html">Home</a>
-		<a href="camps.html">Camps</a>
-		<a href="location.html">How to Get There</a>
+    <a href="index.html">Home</a>
+    <a href="camps.html">Camps</a>
+    <a href="location.html">How to Get There</a>
   </div>
 </nav>
 
@@ -89,7 +120,7 @@
   </a>
 </div>
 
-<div class="gallery">
+<div class="section">
   <h2>Camp Action</h2>
 
   <div class="grid">
@@ -103,13 +134,8 @@
   <h3>Contact Us</h3>
 
   <p>
-    TO BOOK A SPACE OR FOR MORE INFORMATION EMAIL US ON:<br>
-    <strong>HOCKEYPROJECTUK@GMAIL.COM</strong>
-  </p>
-
-  <p>
-    INSTAGRAM:<br>
-    <strong>@HOCKEYPROJECTUK</strong>
+    EMAIL: <strong>HOCKEYPROJECTUK@GMAIL.COM</strong><br>
+    INSTAGRAM: <strong>@HOCKEYPROJECTUK</strong>
   </p>
 </div>
 
