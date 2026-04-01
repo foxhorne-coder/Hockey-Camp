@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>How to Get There</title>
+  <title>Location</title>
 
   <style>
     body {
       font-family: Arial;
-      margin: 0;
-      background: #f5f7fa;
-      text-align: center;
+      margin:0;
+      background:#f5f7fa;
+      text-align:center;
     }
 
     nav {
@@ -33,15 +33,17 @@
     iframe {
       width:100%;
       height:400px;
-      border:0;
       border-radius:10px;
+      border:none;
     }
 
-    .box {
-      background:white;
-      padding:20px;
-      border-radius:12px;
-      margin-top:20px;
+    button {
+      background:#e63946;
+      color:white;
+      padding:12px 20px;
+      border:none;
+      border-radius:8px;
+      margin-top:15px;
     }
   </style>
 </head>
@@ -61,29 +63,15 @@
 
   <h1>How to Get There</h1>
 
-  <div class="box">
-    <h3>📍 Location</h3>
-    <p>Blatchington Mill School</p>
-    <p>Nevill Avenue, Hove, BN3 7BN</p>
-  </div>
+  <p>Blatchington Mill School, Hove, BN3 7BN</p>
 
+  <iframe src="https://www.google.com/maps?q=Blatchington+Mill+School+Hove&output=embed"></iframe>
+
+  <!-- 🔥 OPEN MAPS BUTTON -->
   <br>
-
-  <!-- Google Maps Embed -->
-  <iframe
-    src="https://www.google.com/maps?q=Blatchington+Mill+School+Hove&output=embed">
-  </iframe>
-
-  <div class="box">
-    <h3>🚗 Directions</h3>
-    <p>Parking is available nearby. Please allow time before sessions start.</p>
-
-    <h3>🚌 Public Transport</h3>
-    <p>Local buses run regularly to Hove. Check local bus routes for the best option.</p>
-
-    <h3>📍 What to Bring</h3>
-    <p>Full hockey kit, water bottle, and snacks.</p>
-  </div>
+  <a href="https://www.google.com/maps/dir/?api=1&destination=Blatchington+Mill+School+Hove" target="_blank">
+    <button>Open in Google Maps</button>
+  </a>
 
 </div>
 
