@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Leave Review</title>
+</head>
+
+<body style="font-family:Arial; text-align:center; padding:40px; background:#f5f7fa;">
+
+<h2>Leave a Review ⭐</h2>
+
+<input id="name" placeholder="Your Name"><br><br>
+<input id="team" placeholder="Your Team"><br><br>
+
+<select id="stars">
+  <option value="5">★★★★★</option>
+  <option value="4">★★★★</option>
+  <option value="3">★★★</option>
+  <option value="2">★★</option>
+  <option value="1">★</option>
+</select><br><br>
+
+<textarea id="review" placeholder="Your review"></textarea><br><br>
+
+<button onclick="submitRating()">Submit</button>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
+  authDomain: "hockey-camp-68285.firebaseapp.com",
+  projectId: "hockey-camp-68285"
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+const db = firebase.firestore();
+
+function submitRating(){
+  const name = document.getElementById("name").value;
+  const team = document.getElementById("team").value;
+  const stars = parseInt(document.getElementById("stars").value);
+  const review = document.getElementById("review").value;
+
+  if(!name || !team || !review){
+    alert("Fill all fields");
+    return;
+  }
+
+  db.collection("ratings").add({
+    name,
+    team,
+    stars,
+    review
+  })
+  .then(()=>{
+    alert("Review added!");
+    window.location = "ratings.html";
+  })
+  .catch(err => alert(err));
+}
+</script>
+
+</body>
+</html>
