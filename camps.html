@@ -29,6 +29,11 @@
       padding:20px;
       border-radius:12px;
       box-shadow:0 4px 10px rgba(0,0,0,0.1);
+      transition:0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
     }
 
     button {
@@ -38,6 +43,16 @@
       border:none;
       border-radius:8px;
       width:100%;
+      transition:0.3s;
+    }
+
+    button:hover {
+      background:#c92d3a;
+    }
+
+    .desc {
+      color:#555;
+      margin:10px 0;
     }
   </style>
 </head>
@@ -80,6 +95,10 @@ db.collection("camps").onSnapshot(async snapshot => {
     campList.innerHTML += `
       <div class="card">
         <h3>${camp.title}</h3>
+
+        <p class="desc">
+          ${camp.description || "High intensity training, skills development and game situations."}
+        </p>
 
         <p>${camp.startDate} → ${camp.endDate}</p>
         <p>${camp.startTime} → ${camp.endTime}</p>
