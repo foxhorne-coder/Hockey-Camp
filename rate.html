@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html>
-<body style="text-align:center;padding:40px;font-family:Arial;">
+<body style="font-family:Arial;background:#020617;color:white;text-align:center;padding:40px;">
 
 <h2>Leave Review</h2>
 
-<input id="name" placeholder="Name"><br><br>
-<input id="team" placeholder="Team"><br><br>
-
+<input id="name"><br>
+<input id="team"><br>
 <select id="stars">
 <option value="5">★★★★★</option>
 <option value="4">★★★★</option>
-<option value="3">★★★</option>
-</select><br><br>
+</select><br>
 
-<textarea id="review"></textarea><br><br>
+<textarea id="review"></textarea><br>
 
 <button onclick="send()">Submit</button>
 
@@ -29,7 +27,6 @@ team:team.value,
 stars:Number(stars.value),
 review:review.value
 });
-alert("Review added");
 }
 </script>
 
