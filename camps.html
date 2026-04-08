@@ -7,6 +7,27 @@
 <style>
 body{margin:0;font-family:Arial;background:#f5f7fa;}
 
+.header{
+background:#0a2540;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+.controls{
+display:flex;
+gap:10px;
+padding:15px;
+flex-wrap:wrap;
+}
+
+input{
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+flex:1;
+}
+
 .container{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
@@ -21,7 +42,7 @@ border-radius:12px;
 box-shadow:0 4px 10px rgba(0,0,0,0.1);
 transition:0.3s;
 opacity:0;
-transform:translateY(30px);
+transform:translateY(20px);
 }
 
 .card.show{opacity:1;transform:translateY(0);}
@@ -34,51 +55,85 @@ background:#e63946;
 color:white;
 border:none;
 border-radius:8px;
-transition:0.3s;
 }
 
-button:hover{transform:scale(1.05);}
 .urgent{color:red;font-weight:bold;}
 </style>
 </head>
 
 <body>
 
-<h2 style="text-align:center;">Available Camps</h2>
+<div class="header">
+<h2>Available Camps</h2>
+</div>
+
+<div class="controls">
+<input id="search" placeholder="Search camps..." oninput="load()">
+</div>
 
 <div id="list" class="container"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 
 <script>
-firebase.initializeApp({apiKey:"AIzaSy...",projectId:"hockey-camp-68285"});
+firebase.initializeApp({
+apiKey:"AIzaSy...",
+projectId:"hockey-camp-68285"
+});
+
 const db=firebase.firestore();
 
 function countdown(d){
 const diff=new Date(d)-new Date();
-return diff<=0?"Started":Math.floor(diff/86400000)+" days";
+return diff<=0?"Started":Math.floor(diff/86400000)+" days to go";
 }
 
-db.collection("camps").onSnapshot(async snap=>{
+async function load(){
 const list=document.getElementById("list");
 list.innerHTML="";
 
-for(const doc of snap.docs){
+const search=document.getElementById("search").value.toLowerCase();
+
+const camps=await db.collection("camps").get();
+
+for(const doc of camps.docs){
 const c=doc.data();
 
-const b=await db.collection("bookings")
+if(!c.title.toLowerCase().includes(search)) continue;
+
+const bookings=await db.collection("bookings")
 .where("campId","==",doc.id).get();
 
-const left=(c.maxPlayers||20)-b.size;
+const left=(c.maxPlayers||20)-bookings.size;
+
+/* ratings */
+const ratings=await db.collection("ratings").get();
+let total=0,count=0;
+ratings.forEach(r=>{
+if(r.data().campId===doc.id){
+total+=r.data().stars;
+count++;
+}
+});
+
+const avg=count? (total/count).toFixed(1):"No rating";
 
 const div=document.createElement("div");
 div.className="card";
 
 div.innerHTML=`
 <h3>${c.title}</h3>
+
 <p>${c.description||""}</p>
-<p>${countdown(c.startDate)}</p>
-${left<=3&&left>0?`<p class="urgent">Only ${left} spots left</p>`:""}
+
+<p><strong>${countdown(c.startDate)}</strong></p>
+
+<p>⭐ ${avg}</p>
+
+${left<=3 && left>0?`<p class="urgent">🔥 Only ${left} left!</p>`:""}
+
+<p>Spots left: ${left}</p>
+
 <a href="register.html?id=${doc.id}">
 <button ${left<=0?"disabled":""}>
 ${left<=0?"FULL":"Secure Spot"}
@@ -89,7 +144,9 @@ ${left<=0?"FULL":"Secure Spot"}
 list.appendChild(div);
 setTimeout(()=>div.classList.add("show"),50);
 }
-});
+}
+
+load();
 </script>
 
 </body>
