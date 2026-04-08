@@ -1,216 +1,31 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ratings</title>
+<body style="font-family:Arial;background:#020617;color:white;padding:20px;">
 
-<style>
-body{
-margin:0;
-font-family:Arial;
-background:#f5f7fa;
-}
+<h2>Ratings</h2>
 
-/* NAV */
-nav{
-background:#0a2540;
-padding:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-color:white;
-}
-
-nav a{
-color:white;
-margin:10px;
-text-decoration:none;
-transition:0.3s;
-}
-
-nav a:hover{
-color:#e63946;
-}
-
-/* MAIN */
-.container{
-max-width:900px;
-margin:auto;
-padding:20px;
-}
-
-h2{text-align:center;}
-
-/* CONTROLS */
-.controls{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-margin-bottom:20px;
-}
-
-input, select{
-padding:10px;
-border-radius:8px;
-border:1px solid #ccc;
-flex:1;
-}
-
-/* AVG */
-.avg{
-text-align:center;
-font-size:22px;
-margin:15px 0;
-}
-
-/* CARD */
-.card{
-background:white;
-padding:20px;
-border-radius:12px;
-margin:15px 0;
-box-shadow:0 4px 12px rgba(0,0,0,0.1);
-opacity:0;
-transform:translateY(30px);
-transition:0.5s;
-}
-
-.card.show{
-opacity:1;
-transform:translateY(0);
-}
-
-.card:hover{
-transform:translateY(-5px) scale(1.02);
-}
-
-.name{font-weight:bold;font-size:18px;}
-.stars{color:gold;font-size:18px;}
-.review{margin-top:5px;color:#555;}
-.team{font-size:12px;color:#888;margin-top:10px;}
-
-.loading{text-align:center;margin-top:40px;}
-.empty{text-align:center;color:#777;margin-top:40px;}
-</style>
-</head>
-
-<body>
-
-<nav>
-<div>Hockey Project</div>
-<div>
-<a href="index.html">Home</a>
-<a href="camps.html">Camps</a>
-<a href="ratings.html">Ratings</a>
-</div>
-</nav>
-
-<div class="container">
-
-<h2>Player Reviews ⭐</h2>
-
-<div id="avg" class="avg">Loading...</div>
-
-<div class="controls">
-<input id="search" placeholder="Search name..." oninput="load()">
-<select id="team" onchange="load()">
-<option value="all">All Teams</option>
-</select>
-<select id="sort" onchange="load()">
-<option value="new">Newest</option>
-<option value="high">Highest Rating</option>
-<option value="low">Lowest Rating</option>
-</select>
-</div>
-
+<div id="avg"></div>
 <div id="list"></div>
 
-<div id="state" class="loading">Loading reviews...</div>
-
-</div>
-
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
 <script>
-firebase.initializeApp({
-apiKey:"AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
-projectId:"hockey-camp-68285"
-});
+firebase.initializeApp({apiKey:"AIzaSy...",projectId:"hockey-camp-68285"});
 
-const db=firebase.firestore();
-
-function stars(n){return "★".repeat(n);}
-
-function load(){
-const list=document.getElementById("list");
-const state=document.getElementById("state");
-
-list.innerHTML="";
-state.innerHTML="Loading reviews...";
-
-db.collection("ratings").get().then(snap=>{
-let data=[];
-const teams=new Set();
+firebase.firestore().collection("ratings").get().then(snap=>{
+let total=0,count=0,html="";
 
 snap.forEach(doc=>{
-const r=doc.data();
-teams.add(r.team);
-data.push(r);
+let r=doc.data();
+total+=r.stars;
+count++;
+
+html+=`<div>${r.name} ${"★".repeat(r.stars)}<br>${r.review}</div><hr>`;
 });
 
-/* FILTER */
-const search=document.getElementById("search").value.toLowerCase();
-const team=document.getElementById("team").value;
-
-data=data.filter(r=>{
-return (team==="all"||r.team===team)
-&& r.name.toLowerCase().includes(search);
+avg.innerHTML="Average: "+(total/count).toFixed(1);
+list.innerHTML=html;
 });
-
-/* SORT */
-const sort=document.getElementById("sort").value;
-if(sort==="high") data.sort((a,b)=>b.stars-a.stars);
-if(sort==="low") data.sort((a,b)=>a.stars-b.stars);
-
-/* AVG */
-let total=0;
-data.forEach(r=>total+=r.stars);
-
-document.getElementById("avg").innerHTML=
-data.length?`Average Rating: ${(total/data.length).toFixed(1)} ⭐`:"No ratings";
-
-/* DROPDOWN */
-const teamSelect=document.getElementById("team");
-teamSelect.innerHTML='<option value="all">All Teams</option>';
-teams.forEach(t=>teamSelect.innerHTML+=`<option>${t}</option>`);
-
-/* DISPLAY */
-if(data.length===0){
-state.innerHTML="No reviews found";
-return;
-}
-
-state.innerHTML="";
-
-data.forEach(r=>{
-const div=document.createElement("div");
-div.className="card";
-
-div.innerHTML=`
-<div class="name">${r.name}</div>
-<div class="stars">${stars(r.stars)}</div>
-<div class="review">${r.review}</div>
-<div class="team">${r.team}</div>
-`;
-
-list.appendChild(div);
-setTimeout(()=>div.classList.add("show"),50);
-});
-});
-}
-
-load();
 </script>
 
 </body>
