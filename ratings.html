@@ -17,6 +17,7 @@ background:#0a2540;
 padding:15px;
 display:flex;
 justify-content:space-between;
+align-items:center;
 color:white;
 }
 
@@ -31,23 +32,35 @@ nav a:hover{
 color:#e63946;
 }
 
-/* CONTAINER */
+/* MAIN */
 .container{
 max-width:900px;
 margin:auto;
 padding:20px;
 }
 
-/* TITLE */
-h2{
-text-align:center;
+h2{text-align:center;}
+
+/* CONTROLS */
+.controls{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:20px;
 }
 
-/* AVERAGE */
+input, select{
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+flex:1;
+}
+
+/* AVG */
 .avg{
 text-align:center;
 font-size:22px;
-margin:20px 0;
+margin:15px 0;
 }
 
 /* CARD */
@@ -71,34 +84,13 @@ transform:translateY(0);
 transform:translateY(-5px) scale(1.02);
 }
 
-/* TEXT */
 .name{font-weight:bold;font-size:18px;}
 .stars{color:gold;font-size:18px;}
 .review{margin-top:5px;color:#555;}
 .team{font-size:12px;color:#888;margin-top:10px;}
 
-/* FILTER */
-select{
-padding:10px;
-border-radius:8px;
-width:100%;
-margin-bottom:20px;
-}
-
-/* BUTTON */
-button{
-background:#e63946;
-color:white;
-padding:10px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-transition:0.3s;
-}
-
-button:hover{
-transform:scale(1.05);
-}
+.loading{text-align:center;margin-top:40px;}
+.empty{text-align:center;color:#777;margin-top:40px;}
 </style>
 </head>
 
@@ -109,9 +101,7 @@ transform:scale(1.05);
 <div>
 <a href="index.html">Home</a>
 <a href="camps.html">Camps</a>
-<a href="location.html">Locations</a>
 <a href="ratings.html">Ratings</a>
-<a href="coach.html">Coach</a>
 </div>
 </nav>
 
@@ -121,15 +111,21 @@ transform:scale(1.05);
 
 <div id="avg" class="avg">Loading...</div>
 
-<select id="filter" onchange="load()">
+<div class="controls">
+<input id="search" placeholder="Search name..." oninput="load()">
+<select id="team" onchange="load()">
 <option value="all">All Teams</option>
 </select>
-
-<a href="rate.html">
-<button style="width:100%;">Leave a Review</button>
-</a>
+<select id="sort" onchange="load()">
+<option value="new">Newest</option>
+<option value="high">Highest Rating</option>
+<option value="low">Lowest Rating</option>
+</select>
+</div>
 
 <div id="list"></div>
+
+<div id="state" class="loading">Loading reviews...</div>
 
 </div>
 
@@ -143,27 +139,61 @@ projectId:"hockey-camp-68285"
 });
 
 const db=firebase.firestore();
-const list=document.getElementById("list");
-const avgBox=document.getElementById("avg");
-const filter=document.getElementById("filter");
 
 function stars(n){return "★".repeat(n);}
 
 function load(){
-db.collection("ratings").get().then(snap=>{
+const list=document.getElementById("list");
+const state=document.getElementById("state");
+
 list.innerHTML="";
-let total=0,count=0;
+state.innerHTML="Loading reviews...";
+
+db.collection("ratings").get().then(snap=>{
+let data=[];
 const teams=new Set();
 
 snap.forEach(doc=>{
 const r=doc.data();
 teams.add(r.team);
+data.push(r);
+});
 
-if(filter.value!=="all" && r.team!==filter.value) return;
+/* FILTER */
+const search=document.getElementById("search").value.toLowerCase();
+const team=document.getElementById("team").value;
 
-total+=r.stars;
-count++;
+data=data.filter(r=>{
+return (team==="all"||r.team===team)
+&& r.name.toLowerCase().includes(search);
+});
 
+/* SORT */
+const sort=document.getElementById("sort").value;
+if(sort==="high") data.sort((a,b)=>b.stars-a.stars);
+if(sort==="low") data.sort((a,b)=>a.stars-b.stars);
+
+/* AVG */
+let total=0;
+data.forEach(r=>total+=r.stars);
+
+document.getElementById("avg").innerHTML=
+data.length?`Average Rating: ${(total/data.length).toFixed(1)} ⭐`:"No ratings";
+
+/* DROPDOWN */
+const teamSelect=document.getElementById("team");
+teamSelect.innerHTML='<option value="all">All Teams</option>';
+teams.forEach(t=>teamSelect.innerHTML+=`<option>${t}</option>`);
+
+/* DISPLAY */
+if(data.length===0){
+state.innerHTML="No reviews found";
+return;
+}
+
+state.innerHTML="";
+
+data.forEach(r=>{
 const div=document.createElement("div");
 div.className="card";
 
@@ -176,13 +206,6 @@ div.innerHTML=`
 
 list.appendChild(div);
 setTimeout(()=>div.classList.add("show"),50);
-});
-
-avgBox.innerHTML=count?`Average Rating: ${(total/count).toFixed(1)} ⭐`:"No ratings yet";
-
-filter.innerHTML='<option value="all">All Teams</option>';
-teams.forEach(t=>{
-filter.innerHTML+=`<option>${t}</option>`;
 });
 });
 }
