@@ -1,49 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Location</title>
+  <title>Locations</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    body {
-      font-family: Arial;
-      margin:0;
-      background:#f5f7fa;
-      text-align:center;
-    }
+    body {font-family:Arial; background:#f5f7fa; margin:0; text-align:center;}
 
-    nav {
-      background:#0a2540;
+    nav {background:#0a2540; padding:15px; color:white;}
+
+    .warning {
+      background:#e63946;
       color:white;
       padding:15px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
+      font-weight:bold;
     }
 
-    nav a {
-      color:white;
-      margin:10px;
-      text-decoration:none;
-    }
-
-    .container {
-      padding:30px;
+    .box {
+      background:white;
+      margin:20px;
+      padding:20px;
+      border-radius:12px;
     }
 
     iframe {
       width:100%;
-      height:400px;
+      height:300px;
       border-radius:10px;
-      border:none;
     }
 
     button {
       background:#e63946;
       color:white;
-      padding:12px 20px;
+      padding:10px;
       border:none;
       border-radius:8px;
-      margin-top:15px;
+      margin-top:10px;
     }
   </style>
 </head>
@@ -51,28 +43,21 @@
 <body>
 
 <nav>
-  <img src="logo.png" style="height:40px;">
-  <div>
-    <a href="index.html">Home</a>
-    <a href="camps.html">Camps</a>
-    <a href="location.html">How to Get There</a>
-  </div>
+  <h2>Locations</h2>
 </nav>
 
-<div class="container">
+<div class="warning">
+  ⚠️ Make sure you check which venue your camp is at before arriving
+</div>
 
-  <h1>How to Get There</h1>
+<div class="box">
+  <h3>Blatchington Mill School</h3>
+  <iframe src="https://www.google.com/maps?q=Blatchington+Mill+School&output=embed"></iframe>
+</div>
 
-  <p>Blatchington Mill School, Hove, BN3 7BN</p>
-
-  <iframe src="https://www.google.com/maps?q=Blatchington+Mill+School+Hove&output=embed"></iframe>
-
-  <!-- 🔥 OPEN MAPS BUTTON -->
-  <br>
-  <a href="https://www.google.com/maps/dir/?api=1&destination=Blatchington+Mill+School+Hove" target="_blank">
-    <button>Open in Google Maps</button>
-  </a>
-
+<div class="box">
+  <h3>Bede’s School</h3>
+  <iframe src="https://www.google.com/maps?q=Bedes+School&output=embed"></iframe>
 </div>
 
 </body>
