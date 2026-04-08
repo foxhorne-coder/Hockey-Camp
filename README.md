@@ -1,17 +1,17 @@
 # Hockey Project UK
 
+A full futuristic hockey camp booking platform.
+
 ## Features
-- Camp booking system
-- Stripe payments
-- Admin dashboard
-- Bookings management
-- Ratings & reviews
+- Camps listing with countdown & search
+- Booking system with Stripe redirect
+- Admin dashboard + bookings manager
+- Ratings system with average + filtering
 - Coach profile
 - Locations page
+- Neon futuristic UI
 
-## Advanced Features
-- Search + filters
-- Live updates (Firestore)
-- Animated UI
-- Countdown timers
-- Player limits
+## Tech
+- HTML / CSS / JS
+- Firebase Firestore
+- Stripe Payment Links
