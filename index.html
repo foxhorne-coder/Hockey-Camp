@@ -2,95 +2,40 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hockey Project UK</title>
+<title>Home</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#f5f7fa;}
-
-nav{
-background:#0a2540;
-display:flex;
-justify-content:space-between;
-padding:15px;
-color:white;
-}
-
-nav a{color:white;margin:10px;text-decoration:none;}
+body{margin:0;font-family:Arial;background:#f5f7fa;text-align:center;}
 
 .hero{
-background:url('photo1.jpg') center/cover;
-padding:120px;
+padding:80px;
+background:#0a2540;
 color:white;
-text-align:center;
-position:relative;
+animation:fade 1s;
 }
-
-.hero::before{
-content:"";
-position:absolute;inset:0;
-background:rgba(0,0,0,0.5);
-}
-
-.hero *{position:relative;}
 
 button{
+padding:15px;
 background:#e63946;
 color:white;
-padding:15px;
 border:none;
 border-radius:8px;
 transition:0.3s;
 }
+
 button:hover{transform:scale(1.1);}
-
-.section{
-padding:40px;
-text-align:center;
-}
-
-.fade{
-opacity:0;
-transform:translateY(30px);
-transition:0.6s;
-}
-.fade.show{opacity:1;transform:translateY(0);}
+@keyframes fade{from{opacity:0}to{opacity:1}}
 </style>
 </head>
 
 <body>
 
-<nav>
-<img src="logo.png" style="height:40px;">
-<div>
-<a href="index.html">Home</a>
-<a href="camps.html">Camps</a>
-<a href="location.html">Locations</a>
-<a href="ratings.html">Ratings</a>
-<a href="coach.html">Coach</a>
-</div>
-</nav>
-
-<div class="hero fade">
+<div class="hero">
 <h1>Hockey Project UK</h1>
 <p>Elite Training Camps</p>
-<p>⭐ Rated 4.8/5 | 200+ players trained</p>
 
-<a href="camps.html">
-<button>🔥 Secure Your Spot</button>
-</a>
+<a href="camps.html"><button>View Camps</button></a>
 </div>
-
-<div class="section fade">
-<h2>What You Get</h2>
-<p>✔ Coaching ✔ Skills ✔ Match Play ✔ High Intensity</p>
-</div>
-
-<script>
-const obs=new IntersectionObserver(e=>{
-e.forEach(x=>{if(x.isIntersecting)x.target.classList.add("show")})
-});
-document.querySelectorAll(".fade").forEach(el=>obs.observe(el));
-</script>
 
 </body>
 </html>
