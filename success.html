@@ -1,25 +1,9 @@
 <!DOCTYPE html>
 <html>
-<body>
+<body style="text-align:center;padding:40px;font-family:Arial;">
 
 <h2>Payment Successful</h2>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-
-<script>
-firebase.initializeApp({
-apiKey:"AIzaSy...",
-authDomain:"hockey-camp-68285.firebaseapp.com",
-projectId:"hockey-camp-68285"
-});
-
-const db=firebase.firestore();
-const id=new URLSearchParams(location.search).get("bookingId");
-
-if(id){
-db.collection("bookings").doc(id).update({status:"paid"});
-}
-</script>
+<p>Your booking has been confirmed.</p>
 
 </body>
 </html>
