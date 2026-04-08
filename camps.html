@@ -1,12 +1,32 @@
 <!DOCTYPE html>
 <html>
-<body style="font-family:Arial;background:#f5f7fa;">
+<head>
+<meta name="viewport" content="width=device-width">
+<title>Camps</title>
 
-<h2 style="text-align:center;">Camps</h2>
+<style>
+body{margin:0;font-family:Arial;background:#020617;color:white;}
+nav{display:flex;justify-content:space-between;padding:15px;background:#0a2540;}
+nav a{color:white;text-decoration:none;margin:10px;}
+.container{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;padding:20px;}
+.card{background:rgba(255,255,255,0.05);padding:20px;border-radius:15px;}
+button{width:100%;padding:12px;background:#00e5ff;border:none;border-radius:10px;}
+</style>
+</head>
+
+<body>
+
+<nav>
+<div>Hockey Project</div>
+<div>
+<a href="index.html">Home</a>
+<a href="camps.html">Camps</a>
+</div>
+</nav>
 
 <input id="search" placeholder="Search camps..." oninput="load()">
 
-<div id="list"></div>
+<div id="list" class="container"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 
@@ -15,44 +35,37 @@ firebase.initializeApp({apiKey:"AIzaSy...",projectId:"hockey-camp-68285"});
 const db=firebase.firestore();
 
 function countdown(d){
-const diff=new Date(d)-new Date();
+let diff=new Date(d)-new Date();
 return diff<=0?"Started":Math.floor(diff/86400000)+" days";
 }
 
 async function load(){
-const search=document.getElementById("search").value.toLowerCase();
-let html="";
+let search=searchInput.value.toLowerCase();
+let list=document.getElementById("list");
+list.innerHTML="";
 
-const camps=await db.collection("camps").get();
+let snap=await db.collection("camps").get();
 
-for(const doc of camps.docs){
-const c=doc.data();
+for(const doc of snap.docs){
+let c=doc.data();
 
 if(!c.title.toLowerCase().includes(search)) continue;
 
-const bookings=await db.collection("bookings")
-.where("campId","==",doc.id).get();
+let bookings=await db.collection("bookings").where("campId","==",doc.id).get();
+let left=(c.maxPlayers||20)-bookings.size;
 
-const left=(c.maxPlayers||20)-bookings.size;
-
-html+=`
-<div style="background:white;margin:10px;padding:20px;border-radius:10px;">
+list.innerHTML+=`
+<div class="card">
 <h3>${c.title}</h3>
-
-<p>${c.description||""}</p>
-
+<p>${c.description}</p>
 <p>${countdown(c.startDate)}</p>
-
-${left<=3?`<p style="color:red;">Only ${left} left!</p>`:""}
+<p>${left} spots left</p>
 
 <a href="register.html?id=${doc.id}">
-<button ${left<=0?"disabled":""}>${left<=0?"FULL":"Book"}</button>
+<button>${left<=0?"FULL":"Book"}</button>
 </a>
-</div>
-`;
+</div>`;
 }
-
-document.getElementById("list").innerHTML=html;
 }
 
 load();
