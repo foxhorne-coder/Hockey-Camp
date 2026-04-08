@@ -2,182 +2,40 @@
 <html>
 <head>
   <title>Ratings</title>
-
-  <style>
-    body {
-      font-family: Arial;
-      margin:0;
-      background:#f5f7fa;
-    }
-
-    nav {
-      background:#0a2540;
-      color:white;
-      padding:15px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
-
-    nav a {
-      color:white;
-      margin:10px;
-      text-decoration:none;
-    }
-
-    .container {
-      padding:20px;
-    }
-
-    .avg {
-      font-size:20px;
-      margin:15px 0;
-    }
-
-    .card {
-      background:white;
-      padding:20px;
-      margin:15px 0;
-      border-radius:12px;
-      box-shadow:0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    .name {
-      font-weight:bold;
-      font-size:18px;
-    }
-
-    .stars {
-      margin:5px 0;
-    }
-
-    .star {
-      color:gold;
-      font-size:18px;
-    }
-
-    .review {
-      color:#555;
-    }
-
-    .team {
-      font-size:12px;
-      color:#888;
-      margin-top:10px;
-    }
-
-    select {
-      padding:10px;
-      margin-bottom:20px;
-    }
-  </style>
 </head>
+<body style="font-family:Arial; padding:20px;">
 
-<body>
+<h2>Ratings</h2>
 
-<nav>
-  <img src="logo.png" style="height:40px;">
-  <div>
-    <a href="index.html">Home</a>
-    <a href="camps.html">Camps</a>
-    <a href="location.html">How to Get There</a>
-    <a href="ratings.html">Ratings</a>
-  </div>
-</nav>
-
-<div class="container">
-
-  <h2>Ratings ⭐</h2>
-
-  <div id="avg-rating" class="avg">Loading...</div>
-
-  <select id="teamFilter" onchange="loadRatings()">
-    <option value="all">All Teams</option>
-  </select>
-
-  <div id="ratings-list"></div>
-
-</div>
+<div id="ratings"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
-  authDomain: "hockey-camp-68285.firebaseapp.com",
-  projectId: "hockey-camp-68285"
+  apiKey:"AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
+  authDomain:"hockey-camp-68285.firebaseapp.com",
+  projectId:"hockey-camp-68285"
 };
 
-// 🔥 Prevent duplicate Firebase init
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-
+firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-const ratingsList = document.getElementById("ratings-list");
-const teamFilter = document.getElementById("teamFilter");
-const avgBox = document.getElementById("avg-rating");
-
-function renderStars(num){
-  let starsHTML = "";
-  for(let i = 0; i < num; i++){
-    starsHTML += '<span class="star">★</span>';
-  }
-  return starsHTML;
-}
-
-function loadRatings(){
-  db.collection("ratings").get().then(snapshot => {
-
-    ratingsList.innerHTML = "";
-    let total = 0;
-    let count = 0;
-
-    const teams = new Set();
-
-    snapshot.forEach(doc => {
-      const r = doc.data();
-
-      teams.add(r.team);
-
-      const selected = teamFilter.value;
-      if(selected !== "all" && r.team !== selected) return;
-
-      total += r.stars;
-      count++;
-
-      ratingsList.innerHTML += `
-        <div class="card">
-          <div class="name">${r.name}</div>
-          <div class="stars">${renderStars(r.stars)}</div>
-          <div class="review">${r.review}</div>
-          <div class="team">Team: ${r.team}</div>
-        </div>
-      `;
-    });
-
-    // ⭐ Average
-    if(count > 0){
-      avgBox.innerHTML = "Average Rating: " + (total/count).toFixed(1) + " ⭐";
-    } else {
-      avgBox.innerHTML = "No ratings yet";
-    }
-
-    // Fill dropdown
-    teamFilter.innerHTML = `<option value="all">All Teams</option>`;
-    teams.forEach(team=>{
-      teamFilter.innerHTML += `<option value="${team}">${team}</option>`;
-    });
-
-  }).catch(err => {
-    console.error(err);
-    alert("Error loading ratings — check Firebase rules");
+db.collection("ratings").get().then(snap=>{
+  snap.forEach(doc=>{
+    const r=doc.data();
+    document.getElementById("ratings").innerHTML+=`
+      <div>
+        <b>${r.name}</b><br>
+        ${"★".repeat(r.stars)}<br>
+        ${r.review}<br>
+        <small>${r.team}</small>
+        <hr>
+      </div>
+    `;
   });
-}
-
-loadRatings();
+});
 </script>
 
 </body>
