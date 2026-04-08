@@ -1,126 +1,92 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Camps</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camps</title>
 
-  <style>
-    body {font-family:Arial; margin:0; background:#f5f7fa;}
+<style>
+body{margin:0;font-family:Arial;background:#f5f7fa;}
 
-    nav {
-      background:#0a2540;
-      padding:15px;
-      display:flex;
-      justify-content:space-between;
-    }
+nav{background:#0a2540;padding:15px;color:white;}
+nav a{color:white;margin:10px;text-decoration:none;}
 
-    nav a {color:white; margin:10px; text-decoration:none;}
+.container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:20px;
+padding:20px;
+}
 
-    header {
-      background:#0a2540;
-      color:white;
-      text-align:center;
-      padding:20px;
-    }
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+transition:0.3s;
+}
+.card:hover{transform:translateY(-5px);}
 
-    .container {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-      gap:20px;
-      padding:20px;
-    }
-
-    .card {
-      background:white;
-      padding:20px;
-      border-radius:12px;
-    }
-
-    .urgent {color:red; font-weight:bold;}
-
-    button {
-      background:#e63946;
-      color:white;
-      padding:12px;
-      border:none;
-      border-radius:8px;
-      width:100%;
-    }
-  </style>
+.urgent{color:red;font-weight:bold;}
+</style>
 </head>
 
 <body>
 
 <nav>
-  <img src="logo.png" style="height:40px;">
-  <div>
-    <a href="index.html">Home</a>
-    <a href="camps.html">Camps</a>
-    <a href="location.html">Locations</a>
-    <a href="ratings.html">Ratings</a>
-    <a href="coach.html">Coach</a>
-  </div>
+<a href="index.html">Home</a>
+<a href="camps.html">Camps</a>
 </nav>
 
-<header>
-  <h1>Available Camps</h1>
-</header>
+<h2 style="text-align:center;">Available Camps</h2>
 
-<div class="container" id="camp-list"></div>
+<div class="container" id="list"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey:"AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
-  authDomain:"hockey-camp-68285.firebaseapp.com",
-  projectId:"hockey-camp-68285"
-};
+firebase.initializeApp({
+apiKey:"AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
+authDomain:"hockey-camp-68285.firebaseapp.com",
+projectId:"hockey-camp-68285"
+});
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const db=firebase.firestore();
 
-function countdown(date){
-  const d=new Date(date)-new Date();
-  if(d<=0) return "Started";
-  return Math.floor(d/86400000)+" days to go";
+function countdown(d){
+const diff=new Date(d)-new Date();
+return diff<=0?"Started":Math.floor(diff/86400000)+" days";
 }
 
 db.collection("camps").onSnapshot(async snap=>{
-  const list=document.getElementById("camp-list");
-  list.innerHTML="";
+let html="";
+for(const doc of snap.docs){
+const c=doc.data();
 
-  for(const doc of snap.docs){
-    const c=doc.data();
+const b=await db.collection("bookings")
+.where("campId","==",doc.id).get();
 
-    const bookings=await db.collection("bookings")
-      .where("campId","==",doc.id).get();
+const left=(c.maxPlayers||20)-b.size;
 
-    const left=(c.maxPlayers||20)-bookings.size;
+html+=`
+<div class="card">
+<h3>${c.title}</h3>
+<p>${c.description||""}</p>
 
-    list.innerHTML+=`
-      <div class="card">
-        <h3>${c.title}</h3>
-        <p>${c.description||""}</p>
+<p>${countdown(c.startDate)}</p>
 
-        <p><strong>${countdown(c.startDate)}</strong></p>
-        <p>${c.startDate} → ${c.endDate}</p>
+${left<=3 && left>0?`<p class="urgent">🔥 Only ${left} spots left!</p>`:""}
 
-        ${left<=3 && left>0 ? `<p class="urgent">🔥 Only ${left} spots left!</p>` : ""}
+<p>Spots: ${left}</p>
 
-        <p>Spots left: ${left}</p>
-
-        <a href="register.html?id=${doc.id}">
-          <button ${left<=0?"disabled":""}>
-            ${left<=0?"FULL":"🔥 Secure Your Spot"}
-          </button>
-        </a>
-
-        <p style="font-size:12px;">Secure payment via Stripe</p>
-      </div>
-    `;
-  }
+<a href="register.html?id=${doc.id}">
+<button ${left<=0?"disabled":""}>
+${left<=0?"FULL":"🔥 Secure Spot"}
+</button>
+</a>
+</div>
+`;
+}
+document.getElementById("list").innerHTML=html;
 });
 </script>
 
