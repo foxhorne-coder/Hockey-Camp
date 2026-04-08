@@ -1,20 +1,13 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Book Camp</title>
-</head>
-
-<body style="font-family:Arial; text-align:center; padding:40px;">
+<body style="font-family:Arial;text-align:center;padding:40px;">
 
 <h2>Book Camp</h2>
 
 <input id="name" placeholder="Name"><br><br>
-<input id="age" placeholder="Age"><br><br>
-<input id="number" placeholder="Player Number"><br><br>
 <input id="team" placeholder="Team"><br><br>
-<input id="email" placeholder="Email"><br><br>
 
-<button onclick="book()">Book & Pay</button>
+<button onclick="book()">Book</button>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -22,48 +15,28 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
-  authDomain: "hockey-camp-68285.firebaseapp.com",
-  projectId: "hockey-camp-68285"
-};
+firebase.initializeApp({
+apiKey:"AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
+authDomain:"hockey-camp-68285.firebaseapp.com",
+projectId:"hockey-camp-68285"
+});
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-
-const db = firebase.firestore();
-
-const params = new URLSearchParams(window.location.search);
-const campId = params.get("id");
+const db=firebase.firestore();
+const campId=new URLSearchParams(location.search).get("id");
 
 async function book(){
-  const name = document.getElementById("name").value;
-  const age = document.getElementById("age").value;
-  const number = document.getElementById("number").value;
-  const team = document.getElementById("team").value;
-  const email = document.getElementById("email").value;
+const ref=await db.collection("bookings").add({
+name:name.value,
+team:team.value,
+campId,
+status:"pending"
+});
 
-  const campDoc = await db.collection("camps").doc(campId).get();
-  const camp = campDoc.data();
+confetti();
 
-  const bookingRef = await db.collection("bookings").add({
-    name, age, playerNumber: number, team, email,
-    campId,
-    campName: camp.title,
-    status: "pending"
-  });
-
-  // 🎉 CONFETTI
-  confetti({
-    particleCount:150,
-    spread:70,
-    origin:{y:0.6}
-  });
-
-  setTimeout(()=>{
-    window.location = "https://buy.stripe.com/eVq8wQe7g84MdSW6288N200?bookingId=" + bookingRef.id;
-  },1500);
+setTimeout(()=>{
+window.location="https://buy.stripe.com/eVq8wQe7g84MdSW6288N200?bookingId="+ref.id;
+},1000);
 }
 </script>
 
