@@ -4,9 +4,10 @@
 
 <h2>Add Camp</h2>
 
-<input id="title"><br><br>
-<input id="description"><br><br>
+<input id="title" placeholder="Camp name"><br><br>
+<input id="description" placeholder="Description"><br><br>
 <input id="startDate" type="date"><br><br>
+<input id="maxPlayers" placeholder="Max players"><br><br>
 
 <button onclick="add()">Add Camp</button>
 
@@ -14,14 +15,15 @@
 
 <script>
 firebase.initializeApp({apiKey:"AIzaSy...",projectId:"hockey-camp-68285"});
-const db=firebase.firestore();
 
 function add(){
-db.collection("camps").add({
+firebase.firestore().collection("camps").add({
 title:title.value,
 description:description.value,
-startDate:startDate.value
+startDate:startDate.value,
+maxPlayers:maxPlayers.value
 });
+alert("Camp added");
 }
 </script>
 
