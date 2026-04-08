@@ -1,68 +1,27 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Admin Dashboard</title>
-</head>
-
-<body>
+<body style="font-family:Arial;padding:40px;text-align:center;">
 
 <h2>Add Camp</h2>
 
-<input id="title" placeholder="Camp Name"><br><br>
-<input id="description" placeholder="Camp Description"><br><br>
-
-<label>Start Date:</label><br>
+<input id="title"><br><br>
+<input id="description"><br><br>
 <input id="startDate" type="date"><br><br>
 
-<label>End Date:</label><br>
-<input id="endDate" type="date"><br><br>
-
-<label>Start Time:</label><br>
-<input id="startTime" type="time"><br><br>
-
-<label>End Time:</label><br>
-<input id="endTime" type="time"><br><br>
-
-<input id="price" placeholder="Price"><br><br>
-<input id="maxPlayers" placeholder="Max Players"><br><br>
-
-<button onclick="addCamp()">Add Camp</button>
+<button onclick="add()">Add Camp</button>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
-  authDomain: "hockey-camp-68285.firebaseapp.com",
-  projectId: "hockey-camp-68285"
-};
+firebase.initializeApp({apiKey:"AIzaSy...",projectId:"hockey-camp-68285"});
+const db=firebase.firestore();
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-function addCamp(){
-  const title = document.getElementById("title").value;
-  const description = document.getElementById("description").value;
-  const startDate = document.getElementById("startDate").value;
-  const endDate = document.getElementById("endDate").value;
-  const startTime = document.getElementById("startTime").value;
-  const endTime = document.getElementById("endTime").value;
-  const price = document.getElementById("price").value;
-  const maxPlayers = document.getElementById("maxPlayers").value;
-
-  db.collection("camps").add({
-    title,
-    description,
-    startDate,
-    endDate,
-    startTime,
-    endTime,
-    price,
-    maxPlayers
-  })
-  .then(() => alert("Camp added!"))
-  .catch(err => alert(err));
+function add(){
+db.collection("camps").add({
+title:title.value,
+description:description.value,
+startDate:startDate.value
+});
 }
 </script>
 
