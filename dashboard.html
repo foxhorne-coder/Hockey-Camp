@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html>
-<body style="font-family:Arial;padding:40px;text-align:center;">
+<body style="font-family:Arial;background:#020617;color:white;text-align:center;padding:40px;">
 
 <h2>Add Camp</h2>
 
-<input id="title" placeholder="Camp name"><br><br>
-<input id="description" placeholder="Description"><br><br>
-<input id="startDate" type="date"><br><br>
-<input id="maxPlayers" placeholder="Max players"><br><br>
+<input id="title"><br>
+<input id="description"><br>
+<input id="startDate" type="date"><br>
 
-<button onclick="add()">Add Camp</button>
+<button onclick="add()">Add</button>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 
@@ -20,10 +19,8 @@ function add(){
 firebase.firestore().collection("camps").add({
 title:title.value,
 description:description.value,
-startDate:startDate.value,
-maxPlayers:maxPlayers.value
+startDate:startDate.value
 });
-alert("Camp added");
 }
 </script>
 
