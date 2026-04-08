@@ -4,28 +4,22 @@
 
 <h2>Bookings</h2>
 
-<input id="search" placeholder="Search name..." oninput="load()"><br><br>
+<input id="search" placeholder="Search player..." oninput="load()"><br><br>
 
 <div id="count"></div>
-
 <div id="list"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 
 <script>
-firebase.initializeApp({
-apiKey:"AIzaSy...",
-projectId:"hockey-camp-68285"
-});
-
+firebase.initializeApp({apiKey:"AIzaSy...",projectId:"hockey-camp-68285"});
 const db=firebase.firestore();
 
 function load(){
 const search=document.getElementById("search").value.toLowerCase();
 
 db.collection("bookings").get().then(snap=>{
-let html="";
-let total=0;
+let html="", total=0;
 
 snap.forEach(doc=>{
 const b=doc.data();
@@ -44,7 +38,7 @@ Status: ${b.status}<br>
 `;
 });
 
-document.getElementById("count").innerHTML="Total: "+total;
+document.getElementById("count").innerHTML="Total bookings: "+total;
 document.getElementById("list").innerHTML=html;
 });
 }
