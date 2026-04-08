@@ -1,41 +1,193 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Ratings</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ratings</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#f5f7fa;
+}
+
+/* NAV */
+nav{
+background:#0a2540;
+padding:15px;
+display:flex;
+justify-content:space-between;
+color:white;
+}
+
+nav a{
+color:white;
+margin:10px;
+text-decoration:none;
+transition:0.3s;
+}
+
+nav a:hover{
+color:#e63946;
+}
+
+/* CONTAINER */
+.container{
+max-width:900px;
+margin:auto;
+padding:20px;
+}
+
+/* TITLE */
+h2{
+text-align:center;
+}
+
+/* AVERAGE */
+.avg{
+text-align:center;
+font-size:22px;
+margin:20px 0;
+}
+
+/* CARD */
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+margin:15px 0;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+opacity:0;
+transform:translateY(30px);
+transition:0.5s;
+}
+
+.card.show{
+opacity:1;
+transform:translateY(0);
+}
+
+.card:hover{
+transform:translateY(-5px) scale(1.02);
+}
+
+/* TEXT */
+.name{font-weight:bold;font-size:18px;}
+.stars{color:gold;font-size:18px;}
+.review{margin-top:5px;color:#555;}
+.team{font-size:12px;color:#888;margin-top:10px;}
+
+/* FILTER */
+select{
+padding:10px;
+border-radius:8px;
+width:100%;
+margin-bottom:20px;
+}
+
+/* BUTTON */
+button{
+background:#e63946;
+color:white;
+padding:10px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+</style>
 </head>
-<body style="font-family:Arial; padding:20px;">
 
-<h2>Ratings</h2>
+<body>
 
-<div id="ratings"></div>
+<nav>
+<div>Hockey Project</div>
+<div>
+<a href="index.html">Home</a>
+<a href="camps.html">Camps</a>
+<a href="location.html">Locations</a>
+<a href="ratings.html">Ratings</a>
+<a href="coach.html">Coach</a>
+</div>
+</nav>
+
+<div class="container">
+
+<h2>Player Reviews ⭐</h2>
+
+<div id="avg" class="avg">Loading...</div>
+
+<select id="filter" onchange="load()">
+<option value="all">All Teams</option>
+</select>
+
+<a href="rate.html">
+<button style="width:100%;">Leave a Review</button>
+</a>
+
+<div id="list"></div>
+
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey:"AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
-  authDomain:"hockey-camp-68285.firebaseapp.com",
-  projectId:"hockey-camp-68285"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-db.collection("ratings").get().then(snap=>{
-  snap.forEach(doc=>{
-    const r=doc.data();
-    document.getElementById("ratings").innerHTML+=`
-      <div>
-        <b>${r.name}</b><br>
-        ${"★".repeat(r.stars)}<br>
-        ${r.review}<br>
-        <small>${r.team}</small>
-        <hr>
-      </div>
-    `;
-  });
+firebase.initializeApp({
+apiKey:"AIzaSyC54F2hAyF3JFmk4Nr-dK1EDgEEgu-ya14",
+projectId:"hockey-camp-68285"
 });
+
+const db=firebase.firestore();
+const list=document.getElementById("list");
+const avgBox=document.getElementById("avg");
+const filter=document.getElementById("filter");
+
+function stars(n){return "★".repeat(n);}
+
+function load(){
+db.collection("ratings").get().then(snap=>{
+list.innerHTML="";
+let total=0,count=0;
+const teams=new Set();
+
+snap.forEach(doc=>{
+const r=doc.data();
+teams.add(r.team);
+
+if(filter.value!=="all" && r.team!==filter.value) return;
+
+total+=r.stars;
+count++;
+
+const div=document.createElement("div");
+div.className="card";
+
+div.innerHTML=`
+<div class="name">${r.name}</div>
+<div class="stars">${stars(r.stars)}</div>
+<div class="review">${r.review}</div>
+<div class="team">${r.team}</div>
+`;
+
+list.appendChild(div);
+setTimeout(()=>div.classList.add("show"),50);
+});
+
+avgBox.innerHTML=count?`Average Rating: ${(total/count).toFixed(1)} ⭐`:"No ratings yet";
+
+filter.innerHTML='<option value="all">All Teams</option>';
+teams.forEach(t=>{
+filter.innerHTML+=`<option>${t}</option>`;
+});
+});
+}
+
+load();
 </script>
 
 </body>
