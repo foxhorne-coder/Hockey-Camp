@@ -36,10 +36,7 @@
       border-radius:12px;
     }
 
-    .urgent {
-      color:red;
-      font-weight:bold;
-    }
+    .urgent {color:red; font-weight:bold;}
 
     button {
       background:#e63946;
@@ -61,6 +58,7 @@
     <a href="camps.html">Camps</a>
     <a href="location.html">Locations</a>
     <a href="ratings.html">Ratings</a>
+    <a href="coach.html">Coach</a>
   </div>
 </nav>
 
@@ -104,11 +102,9 @@ db.collection("camps").onSnapshot(async snap=>{
     list.innerHTML+=`
       <div class="card">
         <h3>${c.title}</h3>
-
         <p>${c.description||""}</p>
 
         <p><strong>${countdown(c.startDate)}</strong></p>
-
         <p>${c.startDate} → ${c.endDate}</p>
 
         ${left<=3 && left>0 ? `<p class="urgent">🔥 Only ${left} spots left!</p>` : ""}
