@@ -1,32 +1,17 @@
 # Hockey Project UK
 
-A full hockey camp booking website.
-
 ## Features
-- Camps listing with live updates
-- Booking system with Stripe payments
+- Camp booking system
+- Stripe payments
 - Admin dashboard
-- Player bookings viewer
-- Ratings & reviews with averages
-- Coach bio page
-- Locations page with multiple venues
-- Mobile responsive design
-- Animations and transitions
+- Bookings management
+- Ratings & reviews
+- Coach profile
+- Locations page
 
-## Tech Stack
-- HTML, CSS, JavaScript
-- Firebase Firestore
-- Stripe Payment Links
-
-## Pages
-- index.html
-- camps.html
-- register.html
-- success.html
-- dashboard.html
-- bookings.html
-- ratings.html
-- rate.html
-- location.html
-- coach.html
-- admin.html
+## Advanced Features
+- Search + filters
+- Live updates (Firestore)
+- Animated UI
+- Countdown timers
+- Player limits
