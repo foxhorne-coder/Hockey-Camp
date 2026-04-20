@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width">
 <title>Camps</title>
 
 <style>
@@ -9,119 +9,112 @@ body{
 margin:0;
 font-family:'Segoe UI';
 color:white;
-background:linear-gradient(120deg,#0a0f2c,#1a0033,#2a0022);
-background-size:300% 300%;
-animation:bg 12s infinite;
-}
-@keyframes bg{
-0%{background-position:0% 50%}
-50%{background-position:100% 50%}
-100%{background-position:0% 50%}
+background:linear-gradient(120deg,#0a0f2c,#1a0033);
 }
 
-/* NAV */
-nav{
-display:flex;
-justify-content:space-between;
-padding:20px 40px;
-background:rgba(0,0,0,0.2);
-backdrop-filter:blur(10px);
+/* SIDEBAR */
+.menu{
+position:fixed;
+top:15px;
+left:15px;
+cursor:pointer;
+z-index:200;
 }
 
-nav a{
-color:white;
-margin:10px;
-text-decoration:none;
+.sidebar{
+position:fixed;
+left:-260px;
+top:0;
+width:250px;
+height:100%;
+background:black;
+padding:20px;
+transition:0.3s;
 }
-nav a:hover{color:#5ad9ff;}
 
-.nav-btn{
-background:linear-gradient(90deg,#5ad9ff,#ff4d6d);
-padding:10px 15px;
-border-radius:8px;
-}
+.sidebar a{color:white;display:block;margin:15px 0;}
 
 /* GRID */
 .container{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 gap:20px;
-padding:40px;
+padding:80px 20px;
 }
 
-/* CARD */
 .card{
 background:rgba(255,255,255,0.05);
 padding:20px;
-border-radius:15px;
-backdrop-filter:blur(10px);
-box-shadow:0 0 20px rgba(90,217,255,0.2);
-transition:0.3s;
-}
-
-.card:hover{
-transform:translateY(-5px);
-box-shadow:0 0 30px rgba(90,217,255,0.6);
+border-radius:12px;
 }
 
 button{
 width:100%;
-padding:12px;
-border:none;
-border-radius:10px;
+padding:10px;
 background:linear-gradient(90deg,#5ad9ff,#ff4d6d);
-color:white;
-cursor:pointer;
+border:none;
+border-radius:8px;
 }
 
+/* TRANSITION */
+.transition{position:fixed;width:100%;height:100%;top:0;left:0;}
+.dot{position:absolute;width:8px;height:8px;background:#5ad9ff;border-radius:50%;animation:fly 0.8s;}
+@keyframes fly{to{transform:translateY(100vh);}}
 </style>
 </head>
 
 <body>
 
-<nav>
-<div>Hockey Project X</div>
-<div>
-<a href="index.html">Home</a>
-<a href="camps.html">Camps</a>
-<a href="coach.html">Coaches</a>
-<a href="location.html">Locations</a>
-<a href="ratings.html">Ratings</a>
+<div class="menu" onclick="toggle()">☰</div>
+
+<div id="sidebar" class="sidebar">
+<a onclick="go('index.html')">Home</a>
+<a onclick="go('camps.html')">Camps</a>
+<a onclick="go('coach.html')">Coaches</a>
+<a onclick="go('location.html')">Locations</a>
+<a onclick="go('ratings.html')">Ratings</a>
+<a onclick="go('admin.html')">Admin</a>
 </div>
-<a href="camps.html" class="nav-btn">Book</a>
-</nav>
 
 <div class="container" id="list"></div>
+
+<div id="transition" class="transition"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 
 <script>
-firebase.initializeApp({
-apiKey:"AIzaSy...",
-projectId:"hockey-camp-68285"
-});
+firebase.initializeApp({apiKey:"AIzaSy...",projectId:"hockey-camp-68285"});
 const db=firebase.firestore();
+
+function toggle(){
+sidebar.style.left = sidebar.style.left==="0px" ? "-260px":"0px";
+}
+
+function go(url){
+for(let i=0;i<80;i++){
+let d=document.createElement("div");
+d.className="dot";
+d.style.left=Math.random()*100+"vw";
+d.style.top=Math.random()*100+"vh";
+transition.appendChild(d);
+}
+setTimeout(()=>window.location=url,500);
+}
 
 db.collection("camps").get().then(snap=>{
 let html="";
-
 snap.forEach(doc=>{
-const c=doc.data();
-
+let c=doc.data();
 html+=`
 <div class="card">
 <h3>${c.title}</h3>
-<p>${c.description||""}</p>
-<p>${c.startDate||""}</p>
-
+<p>${c.description}</p>
 <a href="register.html?id=${doc.id}">
-<button>Book Now</button>
+<button>Book</button>
 </a>
-</div>
-`;
+</div>`;
 });
-
-document.getElementById("list").innerHTML=html;
+list.innerHTML=html;
 });
 </script>
 
