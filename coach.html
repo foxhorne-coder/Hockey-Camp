@@ -8,95 +8,60 @@
 body{
 margin:0;
 font-family:'Segoe UI';
-color:white;
 background:linear-gradient(120deg,#0a0f2c,#1a0033);
+color:white;
+padding:30px;
 }
 
-/* NAV */
-nav{
-display:flex;
-justify-content:space-between;
-padding:20px;
-background:rgba(0,0,0,0.2);
-}
-
-nav a{color:white;text-decoration:none;margin:10px;}
-
-/* GRID */
 .grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 gap:20px;
-padding:40px;
 }
 
 .card{
 background:rgba(255,255,255,0.05);
 padding:20px;
-border-radius:15px;
-position:relative;
-overflow:hidden;
+border-radius:12px;
 transition:0.3s;
 }
 
 .card:hover{
 transform:translateY(-5px);
 }
-
-/* HOVER OVERLAY */
-.overlay{
-position:absolute;
-bottom:-100%;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.8);
-display:flex;
-align-items:center;
-justify-content:center;
-text-align:center;
-transition:0.4s;
-}
-
-.card:hover .overlay{
-bottom:0;
-}
-
 </style>
 </head>
 
 <body>
 
-<nav>
-<div>Hockey Project X</div>
-<div>
-<a href="index.html">Home</a>
-<a href="camps.html">Camps</a>
-<a href="coach.html">Coaches</a>
-</div>
-</nav>
+<h2>Our Coaches</h2>
 
-<div class="grid">
+<div class="grid" id="list"></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script>
+firebase.initializeApp({
+apiKey:"AIzaSy...",
+projectId:"hockey-camp-68285"
+});
+
+firebase.firestore().collection("coaches").get().then(snap=>{
+let html="";
+
+snap.forEach(doc=>{
+let c=doc.data();
+
+html+=`
 <div class="card">
-<h3>Coach Alex</h3>
-<p>Head Coach</p>
+<h3>${c.name}</h3>
+<p>${c.role}</p>
+<p>${c.desc}</p>
+</div>`;
+});
 
-<div class="overlay">
-<p>Specialises in elite skill development</p>
-</div>
-</div>
-
-<div class="card">
-<h3>Coach Jamie</h3>
-<p>Assistant Coach</p>
-
-<div class="overlay">
-<p>Focus on tactics & gameplay</p>
-</div>
-</div>
-
-</div>
+list.innerHTML=html;
+});
+</script>
 
 </body>
 </html>
