@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width">
-<title>Admin Panel</title>
+<title>Admin</title>
 
 <style>
 body{
@@ -10,68 +10,20 @@ margin:0;
 font-family:'Segoe UI';
 background:linear-gradient(120deg,#0a0f2c,#1a0033);
 color:white;
-}
-
-/* NAV */
-nav{
-display:flex;
-justify-content:space-between;
-padding:20px 40px;
-background:rgba(0,0,0,0.3);
-backdrop-filter:blur(10px);
-}
-
-/* LAYOUT */
-.container{
-display:grid;
-grid-template-columns:250px 1fr;
-min-height:100vh;
-}
-
-/* SIDEBAR */
-.sidebar{
-background:rgba(255,255,255,0.05);
 padding:20px;
 }
 
-.sidebar button{
-width:100%;
-margin:10px 0;
-padding:12px;
-border:none;
-border-radius:8px;
-background:linear-gradient(90deg,#5ad9ff,#ff4d6d);
-color:white;
-cursor:pointer;
-}
-
-/* MAIN */
-.main{
-padding:30px;
-}
-
-/* CARD */
 .card{
 background:rgba(255,255,255,0.05);
 padding:20px;
-border-radius:12px;
-margin-bottom:20px;
+margin:20px 0;
+border-radius:10px;
 }
 
-/* INPUTS */
-input, textarea{
-width:100%;
+button{
 padding:10px;
-margin:8px 0;
-border-radius:6px;
-border:none;
-background:rgba(255,255,255,0.1);
-color:white;
-}
-
-button.save{
-background:linear-gradient(90deg,#5ad9ff,#ff4d6d);
-padding:10px;
+margin:5px;
+background:#ff4d6d;
 border:none;
 border-radius:6px;
 }
@@ -80,74 +32,40 @@ border-radius:6px;
 
 <body>
 
-<nav>
-<div>Admin Dashboard</div>
-</nav>
+<h2>Admin Dashboard</h2>
 
-<div class="container">
-
-<!-- SIDEBAR -->
-<div class="sidebar">
-<button onclick="show('coaches')">Edit Coaches</button>
-<button onclick="show('camps')">Add Camps</button>
-</div>
-
-<!-- MAIN -->
-<div class="main">
-
-<!-- COACHES -->
-<div id="coaches" class="card">
-<h3>Manage Coaches</h3>
-
-<input id="name" placeholder="Coach Name">
-<input id="role" placeholder="Role">
-<textarea id="desc" placeholder="Description"></textarea>
-
-<button class="save" onclick="addCoach()">Save Coach</button>
-
-<div id="coachList"></div>
-</div>
-
-</div>
-
+<div class="card">
+<h3>Ratings Manager</h3>
+<div id="ratings"></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script>
-firebase.initializeApp({
-apiKey:"AIzaSy...",
-projectId:"hockey-camp-68285"
-});
 
+<script>
+firebase.initializeApp({apiKey:"AIzaSy...",projectId:"hockey-camp-68285"});
 const db=firebase.firestore();
 
-function addCoach(){
-db.collection("coaches").add({
-name:name.value,
-role:role.value,
-desc:desc.value
-});
-loadCoaches();
-}
-
-function loadCoaches(){
-db.collection("coaches").get().then(snap=>{
+function load(){
+db.collection("ratings").get().then(snap=>{
 let html="";
 snap.forEach(doc=>{
-let c=doc.data();
-
+let r=doc.data();
 html+=`
-<div style="margin:10px 0;">
-<b>${c.name}</b> - ${c.role}<br>
-${c.desc}
+<div>
+${r.name} - ${r.review}
+<button onclick="del('${doc.id}')">Delete</button>
 </div>`;
 });
-
-coachList.innerHTML=html;
+ratings.innerHTML=html;
 });
 }
 
-loadCoaches();
+function del(id){
+db.collection("ratings").doc(id).delete();
+load();
+}
+
+load();
 </script>
 
 </body>
