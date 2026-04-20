@@ -8,9 +8,9 @@
 body{
 margin:0;
 font-family:'Segoe UI';
-color:white;
 background:linear-gradient(120deg,#0a0f2c,#1a0033);
-padding:40px;
+color:white;
+padding:30px;
 }
 
 .card{
@@ -21,14 +21,13 @@ margin:15px 0;
 cursor:pointer;
 }
 
-.details{
-max-height:0;
-overflow:hidden;
-transition:0.4s;
+.map{
+display:none;
+margin-top:15px;
 }
 
-.card.active .details{
-max-height:200px;
+.card.active .map{
+display:block;
 }
 </style>
 </head>
@@ -39,15 +38,31 @@ max-height:200px;
 
 <div class="card" onclick="toggle(this)">
 <h3>Blatchington Mill School</h3>
-<div class="details">
-<p>Main training venue</p>
+
+<div class="map">
+<iframe
+width="100%"
+height="250"
+style="border:0"
+loading="lazy"
+allowfullscreen
+src="https://www.google.com/maps?q=Blatchington+Mill+School&output=embed">
+</iframe>
 </div>
 </div>
 
 <div class="card" onclick="toggle(this)">
 <h3>Bede’s School</h3>
-<div class="details">
-<p>Additional sessions location</p>
+
+<div class="map">
+<iframe
+width="100%"
+height="250"
+style="border:0"
+loading="lazy"
+allowfullscreen
+src="https://www.google.com/maps?q=Bedes+School&output=embed">
+</iframe>
 </div>
 </div>
 
