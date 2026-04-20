@@ -1,13 +1,61 @@
 <!DOCTYPE html>
 <html>
-<body style="background:#020617;color:white;text-align:center;padding:40px;font-family:Arial;">
+<head>
+<meta name="viewport" content="width=device-width">
+<title>Locations</title>
+
+<style>
+body{
+margin:0;
+font-family:'Segoe UI';
+color:white;
+background:linear-gradient(120deg,#0a0f2c,#1a0033);
+padding:40px;
+}
+
+.card{
+background:rgba(255,255,255,0.05);
+padding:20px;
+border-radius:12px;
+margin:15px 0;
+cursor:pointer;
+}
+
+.details{
+max-height:0;
+overflow:hidden;
+transition:0.4s;
+}
+
+.card.active .details{
+max-height:200px;
+}
+</style>
+</head>
+
+<body>
 
 <h2>Locations</h2>
 
-<p style="color:red;">Check your venue before attending</p>
-
+<div class="card" onclick="toggle(this)">
 <h3>Blatchington Mill School</h3>
+<div class="details">
+<p>Main training venue</p>
+</div>
+</div>
+
+<div class="card" onclick="toggle(this)">
 <h3>Bede’s School</h3>
+<div class="details">
+<p>Additional sessions location</p>
+</div>
+</div>
+
+<script>
+function toggle(el){
+el.classList.toggle("active");
+}
+</script>
 
 </body>
 </html>
