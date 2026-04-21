@@ -9,30 +9,50 @@ body{
 margin:0;
 font-family:'Segoe UI';
 color:white;
-background:linear-gradient(120deg,#0a0f2c,#1a0033);
+background:linear-gradient(120deg,#020617,#1a0033);
 }
 
-/* SIDEBAR */
+/* FADE */
+body.fade-out{opacity:0;transition:0.4s;}
+
+/* MENU */
 .menu{
 position:fixed;
-top:15px;
-left:15px;
+top:20px;
+left:20px;
 cursor:pointer;
 z-index:200;
 }
 
+/* SIDEBAR */
 .sidebar{
 position:fixed;
 left:-260px;
 top:0;
-width:250px;
+width:260px;
 height:100%;
-background:black;
+background:rgba(0,0,0,0.95);
 padding:20px;
 transition:0.3s;
 }
 
-.sidebar a{color:white;display:block;margin:15px 0;}
+.sidebar a{
+display:block;
+margin:15px 0;
+color:white;
+text-decoration:none;
+}
+
+/* OVERLAY */
+.overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+display:none;
+}
 
 /* GRID */
 .container{
@@ -46,26 +66,27 @@ padding:80px 20px;
 background:rgba(255,255,255,0.05);
 padding:20px;
 border-radius:12px;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+box-shadow:0 0 20px #5ad9ff;
 }
 
 button{
 width:100%;
-padding:10px;
-background:linear-gradient(90deg,#5ad9ff,#ff4d6d);
+padding:12px;
 border:none;
-border-radius:8px;
+border-radius:10px;
+background:linear-gradient(90deg,#5ad9ff,#ff4d6d);
 }
-
-/* TRANSITION */
-.transition{position:fixed;width:100%;height:100%;top:0;left:0;}
-.dot{position:absolute;width:8px;height:8px;background:#5ad9ff;border-radius:50%;animation:fly 0.8s;}
-@keyframes fly{to{transform:translateY(100vh);}}
 </style>
 </head>
 
 <body>
 
-<div class="menu" onclick="toggle()">☰</div>
+<div class="menu" onclick="openMenu()">☰</div>
 
 <div id="sidebar" class="sidebar">
 <a onclick="go('index.html')">Home</a>
@@ -76,9 +97,9 @@ border-radius:8px;
 <a onclick="go('admin.html')">Admin</a>
 </div>
 
-<div class="container" id="list"></div>
+<div id="overlay" class="overlay" onclick="closeMenu()"></div>
 
-<div id="transition" class="transition"></div>
+<div id="list" class="container"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 
@@ -86,34 +107,40 @@ border-radius:8px;
 firebase.initializeApp({apiKey:"AIzaSy...",projectId:"hockey-camp-68285"});
 const db=firebase.firestore();
 
-function toggle(){
-sidebar.style.left = sidebar.style.left==="0px" ? "-260px":"0px";
+/* MENU */
+function openMenu(){
+sidebar.style.left="0";
+overlay.style.display="block";
+}
+function closeMenu(){
+sidebar.style.left="-260px";
+overlay.style.display="none";
 }
 
+/* TRANSITION */
 function go(url){
-for(let i=0;i<80;i++){
-let d=document.createElement("div");
-d.className="dot";
-d.style.left=Math.random()*100+"vw";
-d.style.top=Math.random()*100+"vh";
-transition.appendChild(d);
-}
-setTimeout(()=>window.location=url,500);
+document.body.classList.add("fade-out");
+setTimeout(()=>window.location=url,400);
 }
 
+/* LOAD CAMPS */
 db.collection("camps").get().then(snap=>{
 let html="";
 snap.forEach(doc=>{
 let c=doc.data();
+
 html+=`
 <div class="card">
 <h3>${c.title}</h3>
 <p>${c.description}</p>
+<p>${c.startDate}</p>
+
 <a href="register.html?id=${doc.id}">
-<button>Book</button>
+<button>Book Now</button>
 </a>
 </div>`;
 });
+
 list.innerHTML=html;
 });
 </script>
