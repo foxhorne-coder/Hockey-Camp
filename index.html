@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hockey Project X</title>
 
 <style>
+/* ===== GLOBAL ===== */
 body{
 margin:0;
-font-family:'Segoe UI';
+font-family:'Segoe UI', Arial;
 color:white;
-background:linear-gradient(120deg,#0a0f2c,#1a0033,#2a0022);
+overflow:hidden;
+background:linear-gradient(120deg,#020617,#0a2540,#1a0033);
 background-size:300% 300%;
 animation:bg 12s infinite;
-overflow:hidden;
 }
 
 @keyframes bg{
@@ -21,118 +22,183 @@ overflow:hidden;
 100%{background-position:0% 50%}
 }
 
-/* NAV */
+/* ===== PAGE FADE ===== */
+body.fade-out{
+opacity:0;
+transition:0.4s;
+}
+
+/* ===== NAV ===== */
 nav{
 display:flex;
 justify-content:space-between;
+align-items:center;
 padding:20px 40px;
-background:rgba(0,0,0,0.2);
-backdrop-filter:blur(10px);
 position:fixed;
 width:100%;
 z-index:100;
+background:rgba(0,0,0,0.3);
+backdrop-filter:blur(10px);
 }
 
-nav a{color:white;margin:10px;text-decoration:none;}
+nav a{
+color:white;
+margin:10px;
+text-decoration:none;
+}
+
 nav a:hover{color:#5ad9ff;}
 
 .nav-btn{
 background:linear-gradient(90deg,#5ad9ff,#ff4d6d);
 padding:10px 15px;
 border-radius:8px;
+cursor:pointer;
 }
 
-/* HERO */
+/* ===== HERO ===== */
 .hero{
 display:flex;
 align-items:center;
 justify-content:space-between;
 padding:140px 60px;
-min-height:100vh;
+height:100vh;
 }
 
 .left{max-width:600px;}
 
-h1{font-size:40px;}
+h1{
+font-size:42px;
+line-height:1.3;
+}
 
+/* BUTTON */
 button{
-padding:15px;
+padding:14px 22px;
 border:none;
 border-radius:10px;
 background:linear-gradient(90deg,#5ad9ff,#ff4d6d);
 color:white;
 cursor:pointer;
+transition:0.3s;
 }
 
-/* DOT TRANSITION */
-.transition{
+button:hover{
+transform:scale(1.08);
+box-shadow:0 0 20px #5ad9ff;
+}
+
+/* ===== PARTICLES ===== */
+canvas{
 position:fixed;
 top:0;
 left:0;
-width:100%;
-height:100%;
-pointer-events:none;
-z-index:999;
+z-index:-1;
 }
 
-.dot{
-position:absolute;
-width:8px;
-height:8px;
-background:#5ad9ff;
+/* ===== GLOW LINES ===== */
+.lines{
+position:fixed;
+width:400px;
+height:400px;
+border:1px solid rgba(255,255,255,0.1);
 border-radius:50%;
-animation:fly 0.8s forwards;
+top:-100px;
+left:-100px;
+animation:rotate 25s linear infinite;
 }
 
-@keyframes fly{
-from{transform:scale(0)}
-to{transform:scale(1) translateY(100vh)}
+@keyframes rotate{
+0%{transform:rotate(0)}
+100%{transform:rotate(360deg)}
 }
 </style>
 </head>
 
 <body>
 
+<canvas id="particles"></canvas>
+<div class="lines"></div>
+
 <nav>
 <div>Hockey Project X</div>
 
 <div>
-<a href="index.html">Home</a>
-<a href="camps.html">Camps</a>
-<a href="coach.html">Coaches</a>
-<a href="location.html">Locations</a>
-<a href="ratings.html">Ratings</a>
+<a onclick="go('index.html')">Home</a>
+<a onclick="go('camps.html')">Camps</a>
+<a onclick="go('coach.html')">Coaches</a>
+<a onclick="go('location.html')">Locations</a>
+<a onclick="go('ratings.html')">Ratings</a>
 </div>
 
-<a href="camps.html" class="nav-btn">Book</a>
+<div class="nav-btn" onclick="go('camps.html')">Book →</div>
 </nav>
 
 <div class="hero">
 
 <div class="left">
-<h1>We shape young players into stronger, smarter athletes.</h1>
-<p>Elite hockey training designed for real performance.</p>
+<h1>
+We shape young players into stronger, smarter,
+more confident hockey athletes.
+</h1>
+
+<p>
+Elite coaching built for real performance, confidence,
+and development on the pitch.
+</p>
+
 <button onclick="go('camps.html')">Explore Camps</button>
 </div>
 
 </div>
 
-<div id="transition" class="transition"></div>
-
 <script>
+
+/* PAGE TRANSITION */
 function go(url){
-const t=document.getElementById("transition");
+document.body.classList.add("fade-out");
+setTimeout(()=>window.location=url,400);
+}
+
+/* PARTICLES SYSTEM */
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
 
 for(let i=0;i<80;i++){
-let d=document.createElement("div");
-d.className="dot";
-d.style.left=Math.random()*100+"vw";
-d.style.top=Math.random()*100+"vh";
-t.appendChild(d);
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2,
+dx:(Math.random()-0.5)*0.5,
+dy:(Math.random()-0.5)*0.5
+});
 }
 
-setTimeout(()=>window.location=url,500);
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+particles.forEach(p=>{
+p.x+=p.dx;
+p.y+=p.dy;
+
+if(p.x<0||p.x>canvas.width)p.dx*=-1;
+if(p.y<0||p.y>canvas.height)p.dy*=-1;
+
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fillStyle="#5ad9ff";
+ctx.fill();
+});
+
+requestAnimationFrame(animate);
 }
+
+animate();
 </script>
 
 </body>
